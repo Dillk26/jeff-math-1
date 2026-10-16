@@ -1,0 +1,1606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jeff's Algebra Lab: Functions, Domain & Range</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Phosphor Icons -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .glass-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background-color: #cbd5e1;
+      border-radius: 9999px;
+    }
+    @keyframes pulseSubtle {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+    .pulse-subtle {
+      animation: pulseSubtle 2s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col antialiased selection:bg-indigo-500 selection:text-white">
+
+  <header class="sticky top-0 z-30 bg-white/90 backdrop-blur border-b border-slate-200 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white shadow-md shadow-indigo-100">
+          <i class="ph-bold ph-function text-xl"></i>
+        </div>
+        <div>
+          <h1 class="font-extrabold text-lg text-slate-900 leading-tight">Jeff's Algebra Session</h1>
+          <p class="text-xs font-semibold text-indigo-600">2A & 2B: Functions, Domain, Range & Notation</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button id="open-cheatsheet-btn" class="px-3 py-1.5 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1.5 transition">
+          <i class="ph-bold ph-book-open-text text-indigo-600"></i>
+          <span>Rules & Cheat Sheet</span>
+        </button>
+        <button id="open-scratchpad-btn" class="px-3 py-1.5 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1.5 transition">
+          <i class="ph-bold ph-pencil-simple-line text-indigo-600"></i>
+          <span>Scratchpad</span>
+        </button>
+        <button id="sound-toggle-btn" class="p-2 text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition" title="Toggle audio feedback">
+          <i id="sound-icon" class="ph-bold ph-speaker-high text-base"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6 flex flex-col gap-6">
+
+    <!-- Top Controller: Category filter, progress bar & quick jump -->
+    <div class="glass-card rounded-2xl border border-slate-200/80 p-4 md:p-5 flex flex-col gap-4">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+        <!-- Topic Pills -->
+        <div class="flex flex-wrap items-center gap-1.5" id="topic-filters">
+          <button data-topic="all" class="topic-btn active px-3.5 py-1.5 rounded-xl text-xs font-bold transition bg-indigo-600 text-white shadow-sm">All Questions (<span id="count-all">0</span>)</button>
+          <button data-topic="pairs" class="topic-btn px-3.5 py-1.5 rounded-xl text-xs font-bold transition bg-slate-100 text-slate-600 hover:bg-slate-200">2A: Ordered Pairs (<span id="count-pairs">0</span>)</button>
+          <button data-topic="graphs" class="topic-btn px-3.5 py-1.5 rounded-xl text-xs font-bold transition bg-slate-100 text-slate-600 hover:bg-slate-200">2A: Graphs (<span id="count-graphs">0</span>)</button>
+          <button data-topic="notation" class="topic-btn px-3.5 py-1.5 rounded-xl text-xs font-bold transition bg-slate-100 text-slate-600 hover:bg-slate-200">2B: Equations & Notation (<span id="count-notation">0</span>)</button>
+        </div>
+
+        <!-- Mode badge & counter -->
+        <div class="flex items-center gap-3">
+          <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Question <span id="current-q-index" class="text-indigo-600 font-extrabold text-sm">1</span> of <span id="total-q-count">0</span></span>
+          <button id="toggle-grid-btn" class="p-1.5 text-xs font-bold rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center gap-1">
+            <i class="ph-bold ph-squares-four text-sm"></i>
+            <span>Jump</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Linear Progress Bar -->
+      <div class="flex items-center gap-3">
+        <div class="flex-1 bg-slate-100 rounded-full h-2.5 overflow-hidden border border-slate-200">
+          <div id="progress-bar-fill" class="bg-gradient-to-r from-indigo-500 to-violet-500 h-full w-0 transition-all duration-300"></div>
+        </div>
+        <span id="progress-percentage" class="text-xs font-mono font-bold text-indigo-700">0% Mastered</span>
+      </div>
+
+      <!-- Quick Navigator Drawer (collapsible) -->
+      <div id="quick-jump-container" class="hidden pt-2">
+        <div class="text-xs font-semibold text-slate-500 mb-2">Jump directly to any problem:</div>
+        <div id="quick-jump-grid" class="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto custom-scrollbar p-1">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+
+    <div id="question-card" class="glass-card rounded-2xl border border-slate-200/90 shadow-md p-5 md:p-8 flex flex-col gap-6 relative">
+      
+      <!-- Top Card Header: Badge & Status -->
+      <div class="flex items-center justify-between flex-wrap gap-2">
+        <div class="flex items-center gap-2">
+          <span id="q-category-tag" class="px-2.5 py-1 rounded-lg text-xs font-extrabold bg-indigo-100 text-indigo-800 uppercase tracking-wider">2A Ordered Pairs</span>
+          <span id="q-origin-tag" class="px-2 py-0.5 rounded text-[11px] font-semibold bg-slate-100 text-slate-600">Worksheet 1 #1</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span id="solved-badge" class="hidden text-xs font-bold px-2 py-1 rounded-md bg-emerald-100 text-emerald-700 flex items-center gap-1">
+            <i class="ph-fill ph-check-circle"></i> Completed
+          </span>
+          <button id="reset-q-btn" class="text-xs text-slate-400 hover:text-slate-600 transition flex items-center gap-1" title="Reset this problem">
+            <i class="ph-bold ph-arrows-counter-clockwise"></i> Try Again
+          </button>
+        </div>
+      </div>
+
+      <!-- Question Title & Content Area -->
+      <div class="flex flex-col gap-3">
+        <h2 id="q-instruction" class="text-xl md:text-2xl font-black text-slate-900 tracking-tight leading-snug">
+          Find the Domain and Range. Also, state whether each set of ordered pairs is a function or not.
+        </h2>
+        
+        <!-- Dynamic Content Body (Ordered Pairs / SVG Graph / Equation) -->
+        <div id="q-content-display" class="my-2 p-5 bg-gradient-to-br from-slate-50 to-indigo-50/40 rounded-xl border border-indigo-100 flex flex-col items-center justify-center min-h-[140px]">
+          <!-- Loaded dynamically -->
+        </div>
+      </div>
+
+      <!-- User Interaction / Practice Form -->
+      <div id="user-interaction-area" class="bg-white rounded-xl p-4 md:p-5 border border-slate-200 flex flex-col gap-4">
+        <!-- Interactive widgets populated by question type -->
+        <div id="interactive-fields" class="flex flex-col gap-4">
+          <!-- Dynamic inputs -->
+        </div>
+
+        <!-- Action Button Row -->
+        <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-100">
+          <div class="flex items-center gap-2">
+            <button id="check-ans-btn" class="px-5 py-2.5 rounded-xl font-bold text-sm bg-indigo-600 text-white shadow-md hover:bg-indigo-700 active:scale-95 transition flex items-center gap-2">
+              <i class="ph-bold ph-check text-base"></i>
+              <span>Check Answer</span>
+            </button>
+            <button id="toggle-steps-btn" class="px-4 py-2.5 rounded-xl font-bold text-sm bg-slate-100 text-slate-700 hover:bg-slate-200 active:scale-95 transition flex items-center gap-1.5">
+              <i class="ph-bold ph-lightbulb text-amber-500 text-base"></i>
+              <span id="steps-btn-text">Show Steps & Solution</span>
+            </button>
+          </div>
+          
+          <div id="feedback-message" class="text-sm font-bold hidden flex items-center gap-1.5">
+            <!-- Feedback populates here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Step-by-Step Solution Drawer (Expanded when clicked or answered) -->
+      <div id="solution-drawer" class="hidden flex-col gap-4 p-5 bg-indigo-50/70 border border-indigo-200 rounded-2xl transition-all">
+        <div class="flex items-center justify-between border-b border-indigo-200/80 pb-3">
+          <div class="flex items-center gap-2 font-black text-indigo-950 text-base">
+            <i class="ph-fill ph-check-fat text-indigo-600"></i>
+            <span>Detailed Walkthrough & Answer Key</span>
+          </div>
+          <span class="text-xs font-mono font-bold text-indigo-600 bg-white px-2 py-1 rounded border border-indigo-200">Key for Jeff</span>
+        </div>
+
+        <div id="solution-steps" class="flex flex-col gap-3 text-sm text-slate-800">
+          <!-- Populated dynamically with formatted step 1, 2, 3 -->
+        </div>
+      </div>
+
+      <!-- Bottom Pager Navigation: Previous / Next -->
+      <div class="flex items-center justify-between pt-4 border-t border-slate-100 mt-2">
+        <button id="prev-btn" class="px-4 py-2 rounded-xl text-sm font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center gap-2 transition disabled:opacity-40 disabled:cursor-not-allowed">
+          <i class="ph-bold ph-arrow-left"></i>
+          <span>Previous</span>
+        </button>
+        <div class="text-xs text-slate-400 font-medium hidden sm:block">
+          Use the arrows or click <span class="font-bold text-slate-600">"Next"</span> to step through with Jeff!
+        </div>
+        <button id="next-btn" class="px-5 py-2 rounded-xl text-sm font-bold bg-indigo-600 hover:bg-indigo-700 text-white flex items-center gap-2 transition shadow-sm">
+          <span>Next</span>
+          <i class="ph-bold ph-arrow-right"></i>
+        </button>
+      </div>
+
+    </div>
+
+  </main>
+
+  <div id="cheatsheet-modal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden">
+      <div class="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+        <div class="flex items-center gap-2">
+          <i class="ph-bold ph-sparkle text-indigo-600 text-lg"></i>
+          <h3 class="font-extrabold text-slate-900">Algebra Cheat Sheet & Core Concepts</h3>
+        </div>
+        <button id="close-cheatsheet-btn" class="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg">
+          <i class="ph-bold ph-x text-lg"></i>
+        </button>
+      </div>
+
+      <div class="p-5 overflow-y-auto space-y-5 text-sm custom-scrollbar text-slate-700">
+        <!-- Topic 1 -->
+        <div class="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100">
+          <h4 class="font-black text-indigo-900 text-base mb-1.5 flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full bg-indigo-600 text-white inline-flex items-center justify-center text-xs">1</span>
+            Ordered Pairs: Domain, Range & Function
+          </h4>
+          <ul class="list-disc list-inside space-y-1.5 text-slate-700 pl-1 text-xs md:text-sm">
+            <li><strong>Domain ($x$):</strong> The collection of all the first numbers (inputs). Always list from least to greatest without repeating duplicates! e.g., $\{-6, -3, 0, 7, 9\}$.</li>
+            <li><strong>Range ($y$):</strong> The collection of all the second numbers (outputs). List from least to greatest without repeating duplicates!</li>
+            <li><strong>Is it a function?:</strong> Look only at the <span class="text-indigo-600 font-bold">$x$-values</span>. If any $x$-value shows up more than once with a different $y$-value, it is <strong>NOT</strong> a function. If all $x$-values are distinct, it <strong>IS</strong> a function!</li>
+          </ul>
+        </div>
+
+        <!-- Topic 2 -->
+        <div class="bg-emerald-50/50 p-4 rounded-xl border border-emerald-100">
+          <h4 class="font-black text-emerald-900 text-base mb-1.5 flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full bg-emerald-600 text-white inline-flex items-center justify-center text-xs">2</span>
+            Continuous Graphs: Domain, Range & Vertical Line Test
+          </h4>
+          <ul class="list-disc list-inside space-y-1.5 text-slate-700 pl-1 text-xs md:text-sm">
+            <li><strong>Domain:</strong> How far left to how far right: $\text{[far left } x, \text{far right } x]$.</li>
+            <li><strong>Range:</strong> How far down to how far up: $[\text{lowest } y, \text{highest } y]$.</li>
+            <li><strong>Brackets vs Parentheses:</strong>
+              <div class="mt-1 pl-4 space-y-1">
+                <div>$\circ$ (Open circle) $\implies$ use parentheses <span class="font-mono font-bold text-slate-800">()</span> (value is NOT included).</div>
+                <div>$\blacksquare$ or $\bullet$ (Closed dot/square or solid curve) $\implies$ use square brackets <span class="font-mono font-bold text-slate-800">[]</span> (value IS included).</div>
+              </div>
+            </li>
+            <li><strong>Vertical Line Test:</strong> If any vertical line passes through more than one point on the graph at the same time, it <strong>FAILS</strong> and is <strong>NOT</strong> a function.</li>
+          </ul>
+        </div>
+
+        <!-- Topic 3 -->
+        <div class="bg-amber-50/50 p-4 rounded-xl border border-amber-100">
+          <h4 class="font-black text-amber-900 text-base mb-1.5 flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full bg-amber-600 text-white inline-flex items-center justify-center text-xs">3</span>
+            Function Notation, Operations & Compositions
+          </h4>
+          <ul class="list-disc list-inside space-y-1.5 text-slate-700 pl-1 text-xs md:text-sm">
+            <li>$f(n) = 2n - 2$ means replace the variable with the number in parentheses: $f(-5) = 2(-5) - 2 = -12$.</li>
+            <li><strong>Absolute Value $|a|$:</strong> Turns negative results positive: $|-8| = 8$. Always evaluate what's inside the bars before multiplying by outside coefficients!</li>
+            <li><strong>Sum of Functions:</strong> $g(4) + h(4)$ means calculate $g(4)$ first, then calculate $h(4)$, then add the two results together!</li>
+            <li><strong>Composition $g(h(3))$:</strong> Always work from the <em>inside out</em>! First find $h(3) = \text{result}$. Then plug that result into $g(\text{result})$.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="p-3 bg-slate-50 border-t border-slate-100 flex justify-end">
+        <button id="got-it-cheatsheet-btn" class="px-4 py-2 bg-indigo-600 text-white font-bold rounded-xl text-xs hover:bg-indigo-700">Got it!</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="scratchpad-modal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm hidden items-center justify-center p-3">
+    <div class="bg-white rounded-2xl max-w-xl w-full flex flex-col shadow-2xl border border-slate-200 overflow-hidden">
+      <div class="p-3 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+        <div class="flex items-center gap-2 font-bold text-slate-800 text-sm">
+          <i class="ph-bold ph-pencil-line text-indigo-600"></i>
+          <span>Jeff's Scratchpad</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="clear-scratch-btn" class="px-2 py-1 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded">Clear</button>
+          <button id="close-scratchpad-btn" class="p-1 text-slate-400 hover:text-slate-700 rounded">
+            <i class="ph-bold ph-x"></i>
+          </button>
+        </div>
+      </div>
+      <div class="p-4 bg-slate-50">
+        <textarea id="scratchpad-text" rows="8" class="w-full p-3 font-mono text-sm bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none" placeholder="Type quick math steps, list x-values, or notes here..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification container -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-2 text-sm font-semibold">
+    <i id="toast-icon" class="ph-fill ph-check-circle text-emerald-400 text-lg"></i>
+    <span id="toast-msg">Correct! Well done Jeff!</span>
+  </div>
+
+  <script>
+    /* Full dataset containing:
+       - 10 Questions from Worksheet 1: 2A Ordered Pairs
+       - 4 Bonus Practice Questions for Ordered Pairs
+       - 8 Questions from Worksheet 2: 2A Graphs with coordinate parameters
+       - 3 Bonus Practice Questions for Graphs
+       - 14 Questions from Worksheet 3: 2B Function Notation & Operations
+       - 4 Bonus Practice Questions for Function Notation
+       Total = 43 comprehensive, categorized problems.
+    */
+    const questionsData = [
+      // ================= 2A: ORDERED PAIRS (ORIGINAL 1-10) =================
+      {
+        id: 1,
+        topic: 'pairs',
+        origin: 'Worksheet 1 (#1)',
+        instruction: 'Find the Domain and Range. Also, state whether each set of ordered pairs is a function or not.',
+        pairs: [[7, 7], [9, 0], [0, -4], [-3, 0], [-6, 9]],
+        domain: [-6, -3, 0, 7, 9],
+        range: [-4, 0, 7, 9],
+        isFunction: true,
+        explanation: {
+          step1: 'Extract all the first coordinates ($x$-values): 7, 9, 0, -3, -6.',
+          step2: 'Arrange the $x$-values in order from least to greatest: {-6, -3, 0, 7, 9}. This is the Domain.',
+          step3: 'Extract all the second coordinates ($y$-values): 7, 0, -4, 0, 9. Notice that 0 appears twice, but we write unique values once in order: {-4, 0, 7, 9}. This is the Range.',
+          step4: 'Check for function status: Are any $x$-values repeated with different $y$-values? Each $x$-value (-6, -3, 0, 7, 9) appears exactly once. Yes, this IS a function!'
+        }
+      },
+      {
+        id: 2,
+        topic: 'pairs',
+        origin: 'Worksheet 1 (#2)',
+        instruction: 'Find the Domain and Range. Also, state whether each set of ordered pairs is a function or not.',
+        pairs: [[-5, 9], [5, -2], [-1, 7], [-1, -8], [-3, 3]],
+        domain: [-5, -3, -1, 5],
+        range: [-8, -2, 3, 7, 9],
+        isFunction: false,
+        explanation: {
+          step1: 'Extract all $x$-values: -5, 5, -1, -1, -3. Removing duplicates and sorting gives: {-5, -3, -1, 5}. Domain = {-5, -3, -1, 5}.',
+          step2: 'Extract all $y$-values: 9, -2, 7, -8, 3. Sorting gives: {-8, -2, 3, 7, 9}. Range = {-8, -2, 3, 7, 9}.',
+          step3: 'Function test: The input x = -1 is paired with TWO different outputs (7 and -8): (-1, 7) and (-1, -8).',
+          step4: 'Because one input has more than one output, this is NOT a function.'
+        }
+      },
+      {
+        id: 3,
+        topic: 'pairs',
+        origin: 'Worksheet 1 (#3)',
+        instruction: 'Find the Domain and Range. Also, state whether each set of ordered pairs is a function or not.',
+        pairs: [[7, -9], [-2, 1], [-6, 8], [2, 7], [4, 5]],
+        domain: [-6, -2, 2, 4, 7],
+        range: [-9, 1, 5, 7, 8],
+        isFunction: true,
+        explanation: {
+          step1: 'Domain = {-6, -2, 2, 4, 7} (all unique $x$-coordinates in ascending order).',
+          step2: 'Range = {-9, 1, 5, 7, 8} (all unique $y$-coordinates in ascending order).',
+          step3: 'Check inputs: Every $x$-coordinate is unique (no repeats). Therefore, Yes, this is a function.'
+        }
+      },
+      {
+        id: 4,
+        topic: 'pairs',
+        origin: 'Worksheet 1 (#4)',
+        instruction: 'Find the Domain and Range. Also, state whether each set of ordered pairs is a function or not.',
+        pairs: [[-3, -4], [-4, 8], [6, 1], [3, 8], [6, 9]],
+        domain: [-4, -3, 3, 6],
+        range: [-4, 1, 8, 9],
+        isFunction: false,
+        explanation: {
+          step1: 'Domain = {-4, -3, 3, 6} (6 appears twice in the ordered pairs, written once in the set).',
+          step2: 'Range = {-4, 1, 8, 9} (8 appears twice, written once).',
+          step3: 'Function check: Notice the input x = 6 has pairs (6, 1) and (6, 9).',
+          step4: 'Since input 6 is assigned to both 1 and 9, this is NOT a function.'
+        }
+      },
+      {
+        id: 5,
+        topic: 'pairs',
+        origin: 'Worksheet 1 (#5)',
+        instruction: 'Find the Domain and Range. Also, state whether each set of ordered pairs is a function or not.',
+        pairs: [[-6, 6], [1, -6], [3, 2], [6, -8], [-3, -9]],
+        domain: [-6, -3, 1, 3, 6],
+        range: [-9, -8, -6, 2, 6],
+        isFunction: true,
+        explanation: {
+          step1: 'Domain: List $x$-values {-6, -3, 1, 3, 6}.',
+          step2: 'Range: List $y$-values {-9, -8, -6, 2, 6}.',
+          step3: 'Since all $x$-values are distinct, Yes, this is a function.'
+        }
+      },
+      {
+        id: 6,
+        topic: 'pairs',
+        origin: 'Worksheet 1 (#6)',
+        instruction: 'Find the Domain and Range. Also, state whether each set of ordered pairs is a function or not.',
+        pairs: [[-9, -8], [5, 3], [3, 7], [-2, -7], [1, -6]],
+        domain: [-9, -2, 1, 3, 5],
+        range: [-8, -7, -6, 3, 7],
+        isFunction: true,
+        explanation: {
+          step1: 'Domain = {-9, -2, 1, 3, 5}.',
+          step2: 'Range = {-8, -7, -6, 3, 7}.',
+          step3: 'All $x$-values are unique. Yes, this is a function.'
+        }
+      },
+      {
+        id: 7,
+        topic: 'pairs',
+        origin: 'Worksheet 1 (#7)',
+        instruction: 'Find the Domain and Range. Also, state whether each set of ordered pairs is a function or not.',
+        pairs: [[3, -1], [4, 5], [2, -8], [8, 5], [-2, 6]],
+        domain: [-2, 2, 3, 4, 8],
+        range: [-8, -1, 5, 6],
+        isFunction: true,
+        explanation: {
+          step1: 'Domain: {-2, 2, 3, 4, 8}.',
+          step2: 'Range: {-8, -1, 5, 6}. (Note: 5 appears twice as an output, which is totally allowed for a function!)',
+          step3: 'Check $x$-values: -2, 2, 3, 4, 8 are all single entries. Yes, this is a function.'
+        }
+      },
+      {
+        id: 8,
+        topic: 'pairs',
+        origin: 'Worksheet 1 (#8)',
+        instruction: 'Find the Domain and Range. Also, state whether each set of ordered pairs is a function or not.',
+        pairs: [[-5, 6], [-2, -2], [7, -2], [2, -9], [0, -5]],
+        domain: [-5, -2, 0, 2, 7],
+        range: [-9, -5, -2, 6],
+        isFunction: true,
+        explanation: {
+          step1: 'Domain: {-5, -2, 0, 2, 7}.',
+          step2: 'Range: {-9, -5, -2, 6} (repeating -2 output written once).',
+          step3: 'All $x$-inputs are different. Yes, this is a function.'
+        }
+      },
+      {
+        id: 9,
+        topic: 'pairs',
+        origin: 'Worksheet 1 (#9)',
+        instruction: 'Find the Domain and Range. Also, state whether each set of ordered pairs is a function or not.',
+        pairs: [[-6, -7], [5, -1], [6, -4], [-1, -8], [-7, 0]],
+        domain: [-7, -6, -1, 5, 6],
+        range: [-8, -7, -4, -1, 0],
+        isFunction: true,
+        explanation: {
+          step1: 'Domain: {-7, -6, -1, 5, 6}.',
+          step2: 'Range: {-8, -7, -4, -1, 0}.',
+          step3: 'No repeating inputs. Yes, this is a function.'
+        }
+      },
+      {
+        id: 10,
+        topic: 'pairs',
+        origin: 'Worksheet 1 (#10)',
+        instruction: 'Find the Domain and Range. Also, state whether each set of ordered pairs is a function or not.',
+        pairs: [[2, -8], [-7, 4], [8, 8], [-3, 2], [8, -2]],
+        domain: [-7, -3, 2, 8],
+        range: [-8, -2, 2, 4, 8],
+        isFunction: false,
+        explanation: {
+          step1: 'Domain: {-7, -3, 2, 8}.',
+          step2: 'Range: {-8, -2, 2, 4, 8}.',
+          step3: 'Function check: Notice the ordered pairs (8, 8) and (8, -2). The input 8 is mapped to two different numbers!',
+          step4: 'Therefore, No, this is NOT a function.'
+        }
+      },
+
+      // ================= 2A: BONUS ORDERED PAIRS =================
+      {
+        id: 11,
+        topic: 'pairs',
+        origin: 'Extra Practice #A',
+        instruction: 'Find the Domain and Range. Also, state whether each set of ordered pairs is a function or not.',
+        pairs: [[-4, 5], [0, 5], [3, 5], [7, 5]],
+        domain: [-4, 0, 3, 7],
+        range: [5],
+        isFunction: true,
+        explanation: {
+          step1: 'Domain: {-4, 0, 3, 7}.',
+          step2: 'Range: {5} (all pairs produce 5, like a horizontal line!).',
+          step3: 'Is it a function? Each input has only ONE output (5). Yes, this is a valid constant function!'
+        }
+      },
+      {
+        id: 12,
+        topic: 'pairs',
+        origin: 'Extra Practice #B',
+        instruction: 'Find the Domain and Range. Also, state whether each set of ordered pairs is a function or not.',
+        pairs: [[1, 2], [1, 3], [1, 4], [1, 5]],
+        domain: [1],
+        range: [2, 3, 4, 5],
+        isFunction: false,
+        explanation: {
+          step1: 'Domain: {1}.',
+          step2: 'Range: {2, 3, 4, 5}.',
+          step3: 'Notice the input 1 produces 4 different outputs (like a vertical line!).',
+          step4: 'Because the same input leads to multiple outputs, this is definitely NOT a function.'
+        }
+      },
+
+      // ================= 2A: DOMAIN & RANGE OF GRAPHS (ORIGINAL 1-8) =================
+      {
+        id: 13,
+        topic: 'graphs',
+        origin: 'Graphs Sheet (#1)',
+        instruction: 'Find the Domain and Range in interval notation. Also determine if the graph is a function.',
+        graphConfig: {
+          type: 'line',
+          start: { x: -2, y: 4, open: true },
+          end: { x: 2, y: -4, open: false }
+        },
+        domainStr: '(-2, 2]',
+        rangeStr: '[-4, 4)',
+        isFunction: true,
+        explanation: {
+          step1: 'Domain (X-values: Left to Right): The graph starts at x = -2 with an OPEN circle $\\circ$ (use parenthesis "("), and moves down to x = 2 with a SOLID square $\\blacksquare$ (use bracket "]"). Domain = (-2, 2].',
+          step2: 'Range (Y-values: Bottom to Top): The lowest point is at y = -4 (solid square, so "["), and the highest point reaches up to y = 4 (open circle, so ")"). Range = [-4, 4).',
+          step3: 'Function Test: Any vertical line drawn through this graph will touch at most ONE point. Therefore, Yes, it is a function.'
+        }
+      },
+      {
+        id: 14,
+        topic: 'graphs',
+        origin: 'Graphs Sheet (#2)',
+        instruction: 'Find the Domain and Range in interval notation. Also determine if the graph is a function.',
+        graphConfig: {
+          type: 'cubic',
+          start: { x: -1, y: -1, open: false },
+          end: { x: 1, y: 1, open: false }
+        },
+        domainStr: '[-1, 1]',
+        rangeStr: '[-1, 1]',
+        isFunction: true,
+        explanation: {
+          step1: 'Domain (Left to Right): Starts at x = -1 (solid) and ends at x = 1 (solid). Domain = [-1, 1].',
+          step2: 'Range (Bottom to Top): Lowest y is -1 (solid), highest y is 1 (solid). Range = [-1, 1].',
+          step3: 'Function: Passes the Vertical Line Test everywhere. Yes, this is a function.'
+        }
+      },
+      {
+        id: 15,
+        topic: 'graphs',
+        origin: 'Graphs Sheet (#3)',
+        instruction: 'Find the Domain and Range in interval notation. Also determine if the graph is a function.',
+        graphConfig: {
+          type: 's_curve',
+          start: { x: -5, y: -3, open: false },
+          end: { x: 4, y: 4, open: false }
+        },
+        domainStr: '[-5, 4]',
+        rangeStr: '[-3, 4]',
+        isFunction: true,
+        explanation: {
+          step1: 'Domain: From x = -5 (closed dot) on the left to x = 4 (closed dot) on the right. Domain = [-5, 4].',
+          step2: 'Range: From lowest y = -3 (closed dot) to highest peak y = 4 (closed dot). Range = [-3, 4].',
+          step3: 'Vertical Line Test: Every vertical line hits only 1 point. Yes, this is a function.'
+        }
+      },
+      {
+        id: 16,
+        topic: 'graphs',
+        origin: 'Graphs Sheet (#4)',
+        instruction: 'Find the Domain and Range in interval notation. Also determine if the graph is a function.',
+        graphConfig: {
+          type: 'parabola_right',
+          vertex: { x: 0, y: -1 },
+          top: { x: 4, y: 1, open: true },
+          bottom: { x: 4, y: -3, open: true }
+        },
+        domainStr: '[0, 4)',
+        rangeStr: '(-3, 1)',
+        isFunction: false,
+        explanation: {
+          step1: 'Domain (Left to Right): The curve begins at vertex x = 0 (solid point) and extends right to x = 4 where both ends have OPEN circles $\\circ$. Domain = [0, 4).',
+          step2: 'Range (Bottom to Top): The lowest open circle is at y = -3, and the highest open circle is at y = 1. Both endpoints are open $\\circ$. Range = (-3, 1).',
+          step3: 'Function Test: A vertical line at x = 2 hits BOTH the top branch and bottom branch simultaneously! It FAILS the vertical line test. No, this is NOT a function.'
+        }
+      },
+      {
+        id: 17,
+        topic: 'graphs',
+        origin: 'Graphs Sheet (#5)',
+        instruction: 'Find the Domain and Range in interval notation. Also determine if the graph is a function.',
+        graphConfig: {
+          type: 'loop',
+          start: { x: -5, y: 2, open: true },
+          end: { x: -3, y: 2, open: true },
+          bottom: -5
+        },
+        domainStr: '(-5, -3)',
+        rangeStr: '[-5, 2)',
+        isFunction: false,
+        explanation: {
+          step1: 'Domain: Runs between x = -5 and x = -3. Both top endpoints are open circles. Domain = (-5, -3).',
+          step2: 'Range: Lowest point reaches down to y = -5 (solid turnaround loop), and the highest points reach y = 2 (open circles). Range = [-5, 2).',
+          step3: 'Function Test: The loop crosses over itself; vertical lines between x = -5 and -3 hit multiple points. No, this is NOT a function.'
+        }
+      },
+      {
+        id: 18,
+        topic: 'graphs',
+        origin: 'Graphs Sheet (#6)',
+        instruction: 'Find the Domain and Range in interval notation. Also determine if the graph is a function.',
+        graphConfig: {
+          type: 'sine_wave',
+          start: { x: 0, y: 3, open: true },
+          end: { x: 5, y: 0, open: true },
+          minY: -3,
+          maxY: 3
+        },
+        domainStr: '(0, 5)',
+        rangeStr: '[-3, 3]',
+        isFunction: true,
+        explanation: {
+          step1: 'Domain: Starts at x = 0 (open circle) and stops at x = 5 (open circle). Domain = (0, 5).',
+          step2: 'Range: Look at the physical lowest and highest peaks! The lowest dip hits y = -3 (solid smooth curve = inclusive), and the high peak hits y = 3 (solid smooth curve = inclusive). Range = [-3, 3].',
+          step3: 'Function: Vertical lines cross the wave at only 1 point. Yes, this is a function.'
+        }
+      },
+      {
+        id: 19,
+        topic: 'graphs',
+        origin: 'Graphs Sheet (#7)',
+        instruction: 'Find the Domain and Range in interval notation. Also determine if the graph is a function.',
+        graphConfig: {
+          type: 'parabola_down',
+          start: { x: -4, y: -5, open: false },
+          end: { x: 4, y: -5, open: false },
+          vertex: { x: 0, y: -1 }
+        },
+        domainStr: '[-4, 4]',
+        rangeStr: '[-5, -1]',
+        isFunction: true,
+        explanation: {
+          step1: 'Domain: From left x = -4 (solid square) to right x = 4 (solid square). Domain = [-4, 4].',
+          step2: 'Range: Lowest y is -5 (solid square), highest y is at the vertex y = -1 (solid curve). Range = [-5, -1].',
+          step3: 'Function: Standard downward parabola. Passes the vertical line test. Yes, this is a function.'
+        }
+      },
+      {
+        id: 20,
+        topic: 'graphs',
+        origin: 'Graphs Sheet (#8)',
+        instruction: 'Find the Domain and Range in interval notation. Also determine if the graph is a function.',
+        graphConfig: {
+          type: 'parabola_left',
+          startTop: { x: -3, y: 2, open: false },
+          startBottom: { x: -3, y: -2, open: false },
+          vertex: { x: 1, y: 0 }
+        },
+        domainStr: '[-3, 1]',
+        rangeStr: '[-2, 2]',
+        isFunction: false,
+        explanation: {
+          step1: 'Domain: Leftmost x is -3 (closed points), rightmost peak is x = 1 (vertex). Domain = [-3, 1].',
+          step2: 'Range: Lowest point is y = -2, highest point is y = 2. Range = [-2, 2].',
+          step3: 'Vertical Line Test: Vertical lines for x between -3 and 1 cut through both top and bottom branches. No, this is NOT a function.'
+        }
+      },
+
+      // ================= 2B: FUNCTION NOTATION (ORIGINAL 1-14) =================
+      {
+        id: 21,
+        topic: 'notation',
+        origin: 'Worksheet 3 (#1)',
+        instruction: 'Evaluate the function for the given value.',
+        expression: 'f(n) = 2n - 2; \\text{ Find } f(-5)',
+        type: 'eval_linear',
+        targetAnswer: '-12',
+        explanation: {
+          step1: 'Substitute n = -5 into the expression for f(n):',
+          step2: 'f(-5) = 2(-5) - 2',
+          step3: 'Multiply first: 2 × (-5) = -10',
+          step4: 'Subtract 2: -10 - 2 = -12. Final Answer: -12.'
+        }
+      },
+      {
+        id: 22,
+        topic: 'notation',
+        origin: 'Worksheet 3 (#2)',
+        instruction: 'Evaluate the function for the given value.',
+        expression: 'w(n) = 3n - 4; \\text{ Find } w(8)',
+        type: 'eval_linear',
+        targetAnswer: '20',
+        explanation: {
+          step1: 'Substitute n = 8 into w(n):',
+          step2: 'w(8) = 3(8) - 4',
+          step3: 'Multiply: 3 × 8 = 24',
+          step4: 'Subtract: 24 - 4 = 20. Final Answer: 20.'
+        }
+      },
+      {
+        id: 23,
+        topic: 'notation',
+        origin: 'Worksheet 3 (#3)',
+        instruction: 'Evaluate the function for the given value.',
+        expression: 'g(n) = 4n - 5; \\text{ Find } g(-7)',
+        type: 'eval_linear',
+        targetAnswer: '-33',
+        explanation: {
+          step1: 'Substitute n = -7 into g(n):',
+          step2: 'g(-7) = 4(-7) - 5',
+          step3: 'Multiply: 4 × (-7) = -28',
+          step4: 'Combine: -28 - 5 = -33. Final Answer: -33.'
+        }
+      },
+      {
+        id: 24,
+        topic: 'notation',
+        origin: 'Worksheet 3 (#4)',
+        instruction: 'Evaluate the function for the given value.',
+        expression: 'h(a) = 2a + 5; \\text{ Find } h(-8)',
+        type: 'eval_linear',
+        targetAnswer: '-11',
+        explanation: {
+          step1: 'Substitute a = -8 into h(a):',
+          step2: 'h(-8) = 2(-8) + 5',
+          step3: '2 × (-8) = -16',
+          step4: '-16 + 5 = -11. Final Answer: -11.'
+        }
+      },
+      {
+        id: 25,
+        topic: 'notation',
+        origin: 'Worksheet 3 (#5)',
+        instruction: 'Evaluate the function for the given value.',
+        expression: 'f(x) = x - 1; \\text{ Find } f(-7)',
+        type: 'eval_linear',
+        targetAnswer: '-8',
+        explanation: {
+          step1: 'Substitute x = -7 into f(x):',
+          step2: 'f(-7) = -7 - 1',
+          step3: '-7 - 1 = -8. Final Answer: -8.'
+        }
+      },
+      {
+        id: 26,
+        topic: 'notation',
+        origin: 'Worksheet 3 (#6)',
+        instruction: 'Evaluate the absolute value function.',
+        expression: 'h(x) = |-2x + 2| + 1; \\text{ Find } h(-7)',
+        type: 'eval_abs',
+        targetAnswer: '17',
+        explanation: {
+          step1: 'Substitute x = -7 into the absolute value:',
+          step2: 'Inside bars: -2(-7) + 2 = 14 + 2 = 16',
+          step3: 'Apply absolute value: |16| = 16',
+          step4: 'Add the outside 1: 16 + 1 = 17. Final Answer: 17.'
+        }
+      },
+      {
+        id: 27,
+        topic: 'notation',
+        origin: 'Worksheet 3 (#7)',
+        instruction: 'Evaluate the absolute value function.',
+        expression: 'g(n) = -2|2n|; \\text{ Find } g(-4)',
+        type: 'eval_abs',
+        targetAnswer: '-16',
+        explanation: {
+          step1: 'Substitute n = -4 inside the absolute value:',
+          step2: 'Inside bars: 2(-4) = -8',
+          step3: 'Take absolute value: |-8| = 8',
+          step4: 'Multiply by the -2 in front: -2 × 8 = -16. Final Answer: -16.'
+        }
+      },
+      {
+        id: 28,
+        topic: 'notation',
+        origin: 'Worksheet 3 (#8)',
+        instruction: 'Evaluate the absolute value function.',
+        expression: 'w(x) = 3|-2x|; \\text{ Find } w(-10)',
+        type: 'eval_abs',
+        targetAnswer: '60',
+        explanation: {
+          step1: 'Substitute x = -10 inside the bars: -2(-10) = 20',
+          step2: 'Take absolute value: |20| = 20',
+          step3: 'Multiply by 3 in front: 3 × 20 = 60. Final Answer: 60.'
+        }
+      },
+      {
+        id: 29,
+        topic: 'notation',
+        origin: 'Worksheet 3 (#9)',
+        instruction: 'Perform the indicated function operation.',
+        expression: 'g(x) = -2x - 3, \\quad h(x) = -x - 1; \\quad \\text{Find } g(4) + h(4)',
+        type: 'op_addition',
+        targetAnswer: '-16',
+        explanation: {
+          step1: 'Calculate g(4): g(4) = -2(4) - 3 = -8 - 3 = -11',
+          step2: 'Calculate h(4): h(4) = -(4) - 1 = -4 - 1 = -5',
+          step3: 'Add both values together: g(4) + h(4) = (-11) + (-5) = -16. Final Answer: -16.'
+        }
+      },
+      {
+        id: 30,
+        topic: 'notation',
+        origin: 'Worksheet 3 (#10)',
+        instruction: 'Evaluate the composite function (inside function first!).',
+        expression: 'g(x) = 4x - 3, \\quad h(x) = 4x - 8; \\quad \\text{Find } g(h(3))',
+        type: 'composite',
+        targetAnswer: '13',
+        explanation: {
+          step1: 'Always start with the INSIDE function: Find h(3).',
+          step2: 'h(3) = 4(3) - 8 = 12 - 8 = 4.',
+          step3: 'Now substitute that output (4) into the OUTSIDE function g(x):',
+          step4: 'g(4) = 4(4) - 3 = 16 - 3 = 13. Final Answer: 13.'
+        }
+      },
+      {
+        id: 31,
+        topic: 'notation',
+        origin: 'Worksheet 3 (#11)',
+        instruction: 'Perform the indicated function operation.',
+        expression: 'g(n) = 2n - 4, \\quad f(n) = 4n + 4; \\quad \\text{Find } g(-3) + f(-3)',
+        type: 'op_addition',
+        targetAnswer: '-18',
+        explanation: {
+          step1: 'Find g(-3): 2(-3) - 4 = -6 - 4 = -10.',
+          step2: 'Find f(-3): 4(-3) + 4 = -12 + 4 = -8.',
+          step3: 'Add them: g(-3) + f(-3) = -10 + (-8) = -18. Final Answer: -18.'
+        }
+      },
+      {
+        id: 32,
+        topic: 'notation',
+        origin: 'Worksheet 3 (#12)',
+        instruction: 'Perform the indicated function operation.',
+        expression: 'g(x) = 2x - 5, \\quad f(x) = 2x - 1; \\quad \\text{Find } g(-7) + f(-7)',
+        type: 'op_addition',
+        targetAnswer: '-34',
+        explanation: {
+          step1: 'Find g(-7): 2(-7) - 5 = -14 - 5 = -19.',
+          step2: 'Find f(-7): 2(-7) - 1 = -14 - 1 = -15.',
+          step3: 'Add them: (-19) + (-15) = -34. Final Answer: -34.'
+        }
+      },
+      {
+        id: 33,
+        topic: 'notation',
+        origin: 'Worksheet 3 (#13)',
+        instruction: 'Evaluate the composite function.',
+        expression: 'f(n) = n^3 - 2, \\quad g(n) = 3n - 4; \\quad \\text{Find } f(g(2))',
+        type: 'composite',
+        targetAnswer: '6',
+        explanation: {
+          step1: 'Work inside first: Find g(2).',
+          step2: 'g(2) = 3(2) - 4 = 6 - 4 = 2.',
+          step3: 'Now plug 2 into f(n): f(2) = 2^3 - 2 = 8 - 2 = 6.',
+          step4: 'Final Answer: 6.'
+        }
+      },
+      {
+        id: 34,
+        topic: 'notation',
+        origin: 'Worksheet 3 (#14)',
+        instruction: 'Evaluate the composite function.',
+        expression: 'f(x) = x^3 - 2x, \\quad g(x) = 2x - 7; \\quad \\text{Find } f(g(5))',
+        type: 'composite',
+        targetAnswer: '21',
+        explanation: {
+          step1: 'Inside first: Evaluate g(5) = 2(5) - 7 = 10 - 7 = 3.',
+          step2: 'Now plug 3 into f(x): f(3) = (3)^3 - 2(3).',
+          step3: '3^3 = 27, and 2(3) = 6.',
+          step4: '27 - 6 = 21. Final Answer: 21.'
+        }
+      },
+
+      // ================= 2B: BONUS PRACTICE NOTATIONS =================
+      {
+        id: 35,
+        topic: 'notation',
+        origin: 'Extra Practice #C',
+        instruction: 'Evaluate the composite function.',
+        expression: 'h(x) = 2x + 1, \\quad k(x) = x^2 - 3; \\quad \\text{Find } h(k(4))',
+        type: 'composite',
+        targetAnswer: '27',
+        explanation: {
+          step1: 'Inside first: k(4) = 4^2 - 3 = 16 - 3 = 13.',
+          step2: 'Outside function: h(13) = 2(13) + 1 = 26 + 1 = 27.',
+          step3: 'Final Answer: 27.'
+        }
+      },
+      {
+        id: 36,
+        topic: 'notation',
+        origin: 'Extra Practice #D',
+        instruction: 'Evaluate absolute value notation.',
+        expression: 'f(x) = -|3x - 5|; \\quad \\text{Find } f(1)',
+        type: 'eval_abs',
+        targetAnswer: '-2',
+        explanation: {
+          step1: 'Plug in x = 1 inside the bars: 3(1) - 5 = 3 - 5 = -2.',
+          step2: 'Evaluate absolute value: |-2| = 2.',
+          step3: 'Apply negative sign outside: -(2) = -2. Final Answer: -2.'
+        }
+      }
+    ];
+
+    let currentFilteredList = [...questionsData];
+    let currentIndex = 0;
+    let solvedSet = new Set(JSON.parse(localStorage.getItem('jeff_solved_q') || '[]'));
+    let soundEnabled = true;
+
+    // Web Audio synthesizer for tactile sound feedback (no external URLs needed)
+    function playAudioTone(type) {
+      if (!soundEnabled) return;
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        if (type === 'success') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+          osc.frequency.exponentialRampToValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
+          osc.frequency.exponentialRampToValueAtTime(783.99, audioCtx.currentTime + 0.2); // G5
+          gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.35);
+        } else if (type === 'hint') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+          gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.2);
+        } else if (type === 'wrong') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+          osc.frequency.setValueAtTime(196, audioCtx.currentTime + 0.1);
+          gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.25);
+        }
+      } catch (e) {
+        // audio context not allowed until interaction
+      }
+    }
+
+    function createSvgGraph(config) {
+      const size = 320;
+      const pad = 25;
+      const scale = (size - 2 * pad) / 10; // 10 units (-5 to +5)
+      
+      const toSvgX = (x) => pad + (x + 5) * scale;
+      const toSvgY = (y) => pad + (5 - y) * scale;
+
+      let gridLines = '';
+      for (let i = -5; i <= 5; i++) {
+        const x = toSvgX(i);
+        const y = toSvgY(i);
+        // Grid vertical & horizontal
+        gridLines += `<line x1="${x}" y1="${pad}" x2="${x}" y2="${size - pad}" stroke="#e2e8f0" stroke-width="1.2" />`;
+        gridLines += `<line x1="${pad}" y1="${y}" x2="${size - pad}" y2="${y}" stroke="#e2e8f0" stroke-width="1.2" />`;
+        
+        // Numbers
+        if (i !== 0) {
+          gridLines += `<text x="${x}" y="${toSvgY(0) + 12}" font-size="9" fill="#94a3b8" text-anchor="middle" font-family="JetBrains Mono">${i}</text>`;
+          gridLines += `<text x="${toSvgX(0) - 8}" y="${y + 3}" font-size="9" fill="#94a3b8" text-anchor="end" font-family="JetBrains Mono">${i}</text>`;
+        }
+      }
+
+      // Main Axes
+      const axes = `
+        <line x1="${pad}" y1="${toSvgY(0)}" x2="${size - pad + 15}" y2="${toSvgY(0)}" stroke="#1e293b" stroke-width="2" marker-end="url(#arrow)" />
+        <line x1="${toSvgX(0)}" y1="${size - pad}" x2="${toSvgX(0)}" y2="${pad - 15}" stroke="#1e293b" stroke-width="2" marker-end="url(#arrow)" />
+        <text x="${size - pad + 14}" y="${toSvgY(0) + 15}" font-weight="bold" fill="#0f172a" font-size="12">X</text>
+        <text x="${toSvgX(0) - 15}" y="${pad - 10}" font-weight="bold" fill="#0f172a" font-size="12">Y</text>
+      `;
+
+      let curve = '';
+      let endpoints = '';
+
+      if (config.type === 'line') {
+        curve = `<line x1="${toSvgX(config.start.x)}" y1="${toSvgY(config.start.y)}" x2="${toSvgX(config.end.x)}" y2="${toSvgY(config.end.y)}" stroke="#4f46e5" stroke-width="3.5" stroke-linecap="round" />`;
+        endpoints += config.start.open 
+          ? `<circle cx="${toSvgX(config.start.x)}" cy="${toSvgY(config.start.y)}" r="6" fill="#ffffff" stroke="#4f46e5" stroke-width="3" />`
+          : `<rect x="${toSvgX(config.start.x) - 5}" y="${toSvgY(config.start.y) - 5}" width="10" height="10" fill="#4f46e5" />`;
+        endpoints += config.end.open
+          ? `<circle cx="${toSvgX(config.end.x)}" cy="${toSvgY(config.end.y)}" r="6" fill="#ffffff" stroke="#4f46e5" stroke-width="3" />`
+          : `<rect x="${toSvgX(config.end.x) - 5}" y="${toSvgY(config.end.y) - 5}" width="10" height="10" fill="#4f46e5" />`;
+      } 
+      else if (config.type === 'cubic') {
+        const d = `M ${toSvgX(-1)} ${toSvgY(-1)} C ${toSvgX(-0.3)} ${toSvgY(-0.8)}, ${toSvgX(-0.1)} ${toSvgY(0)}, ${toSvgX(0)} ${toSvgY(0)} C ${toSvgX(0.1)} ${toSvgY(0)}, ${toSvgX(0.3)} ${toSvgY(0.8)}, ${toSvgX(1)} ${toSvgY(1)}`;
+        curve = `<path d="${d}" fill="none" stroke="#4f46e5" stroke-width="3.5" />`;
+        endpoints = `
+          <rect x="${toSvgX(-1) - 5}" y="${toSvgY(-1) - 5}" width="10" height="10" fill="#4f46e5" />
+          <rect x="${toSvgX(1) - 5}" y="${toSvgY(1) - 5}" width="10" height="10" fill="#4f46e5" />
+        `;
+      }
+      else if (config.type === 's_curve') {
+        const d = `M ${toSvgX(-5)} ${toSvgY(-3)} C ${toSvgX(-3)} ${toSvgY(-1)}, ${toSvgX(-1)} ${toSvgY(-1.4)}, ${toSvgX(0)} ${toSvgY(-1.4)} C ${toSvgX(1.5)} ${toSvgY(-1.4)}, ${toSvgX(2.8)} ${toSvgY(-0.5)}, ${toSvgX(4)} ${toSvgY(4)}`;
+        curve = `<path d="${d}" fill="none" stroke="#4f46e5" stroke-width="3.5" stroke-linecap="round" />`;
+        endpoints = `
+          <rect x="${toSvgX(-5) - 5}" y="${toSvgY(-3) - 5}" width="10" height="10" fill="#4f46e5" />
+          <rect x="${toSvgX(4) - 5}" y="${toSvgY(4) - 5}" width="10" height="10" fill="#4f46e5" />
+        `;
+      }
+      else if (config.type === 'parabola_right') {
+        const d = `M ${toSvgX(4)} ${toSvgY(1)} Q ${toSvgX(0)} ${toSvgY(-1)} ${toSvgX(4)} ${toSvgY(-3)}`;
+        curve = `<path d="${d}" fill="none" stroke="#4f46e5" stroke-width="3.5" stroke-linecap="round" />`;
+        endpoints = `
+          <circle cx="${toSvgX(4)}" cy="${toSvgY(1)}" r="6" fill="#ffffff" stroke="#4f46e5" stroke-width="3" />
+          <circle cx="${toSvgX(4)}" cy="${toSvgY(-3)}" r="6" fill="#ffffff" stroke="#4f46e5" stroke-width="3" />
+        `;
+      }
+      else if (config.type === 'loop') {
+        const d = `M ${toSvgX(-5)} ${toSvgY(2)} Q ${toSvgX(-4.2)} ${toSvgY(-1)} ${toSvgX(-4)} ${toSvgY(-2)} C ${toSvgX(-3.8)} ${toSvgY(-3)}, ${toSvgX(-3.8)} ${toSvgY(-5)}, ${toSvgX(-4)} ${toSvgY(-5)} C ${toSvgX(-4.2)} ${toSvgY(-5)}, ${toSvgX(-4.2)} ${toSvgY(-3)}, ${toSvgX(-4)} ${toSvgY(-2)} Q ${toSvgX(-3.8)} ${toSvgY(-1)} ${toSvgX(-3)} ${toSvgY(2)}`;
+        curve = `<path d="${d}" fill="none" stroke="#4f46e5" stroke-width="3.5" />`;
+        endpoints = `
+          <circle cx="${toSvgX(-5)}" cy="${toSvgY(2)}" r="6" fill="#ffffff" stroke="#4f46e5" stroke-width="3" />
+          <circle cx="${toSvgX(-3)}" cy="${toSvgY(2)}" r="6" fill="#ffffff" stroke="#4f46e5" stroke-width="3" />
+        `;
+      }
+      else if (config.type === 'sine_wave') {
+        const d = `M ${toSvgX(0)} ${toSvgY(3)} C ${toSvgX(1)} ${toSvgY(1)}, ${toSvgX(1.3)} ${toSvgY(-3)}, ${toSvgX(2)} ${toSvgY(-3)} C ${toSvgX(2.8)} ${toSvgY(-3)}, ${toSvgX(3.2)} ${toSvgY(3)}, ${toSvgX(4)} ${toSvgY(3)} C ${toSvgX(4.5)} ${toSvgY(3)}, ${toSvgX(4.8)} ${toSvgY(1)}, ${toSvgX(5)} ${toSvgY(0)}`;
+        curve = `<path d="${d}" fill="none" stroke="#4f46e5" stroke-width="3.5" />`;
+        endpoints = `
+          <circle cx="${toSvgX(0)}" cy="${toSvgY(3)}" r="6" fill="#ffffff" stroke="#4f46e5" stroke-width="3" />
+          <circle cx="${toSvgX(5)}" cy="${toSvgY(0)}" r="6" fill="#ffffff" stroke="#4f46e5" stroke-width="3" />
+        `;
+      }
+      else if (config.type === 'parabola_down') {
+        const d = `M ${toSvgX(-4)} ${toSvgY(-5)} Q ${toSvgX(0)} ${toSvgY(3)} ${toSvgX(4)} ${toSvgY(-5)}`;
+        curve = `<path d="${d}" fill="none" stroke="#4f46e5" stroke-width="3.5" />`;
+        endpoints = `
+          <rect x="${toSvgX(-4) - 5}" y="${toSvgY(-5) - 5}" width="10" height="10" fill="#4f46e5" />
+          <rect x="${toSvgX(4) - 5}" y="${toSvgY(-5) - 5}" width="10" height="10" fill="#4f46e5" />
+        `;
+      }
+      else if (config.type === 'parabola_left') {
+        const d = `M ${toSvgX(-3)} ${toSvgY(2)} Q ${toSvgX(1.2)} ${toSvgY(0.7)} ${toSvgX(1)} ${toSvgY(0)} Q ${toSvgX(1.2)} ${toSvgY(-0.7)} ${toSvgX(-3)} ${toSvgY(-2)}`;
+        curve = `<path d="${d}" fill="none" stroke="#4f46e5" stroke-width="3.5" />`;
+        endpoints = `
+          <rect x="${toSvgX(-3) - 5}" y="${toSvgY(2) - 5}" width="10" height="10" fill="#4f46e5" />
+          <rect x="${toSvgX(-3) - 5}" y="${toSvgY(-2) - 5}" width="10" height="10" fill="#4f46e5" />
+        `;
+      }
+
+      return `
+        <div class="flex flex-col items-center">
+          <div class="relative bg-white p-2 rounded-xl shadow-inner border border-slate-200">
+            <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" class="max-w-full h-auto">
+              <defs>
+                <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                  <path d="M 0 0 L 10 5 L 0 10 z" fill="#1e293b"/>
+                </marker>
+              </defs>
+              ${gridLines}
+              ${axes}
+              ${curve}
+              ${endpoints}
+              <!-- Interactive vertical test bar (draggable/visual) -->
+              <line id="vlt-line" x1="${toSvgX(0)}" y1="${pad}" x2="${toSvgX(0)}" y2="${size - pad}" stroke="#f43f5e" stroke-width="2.5" stroke-dasharray="4,4" class="hidden opacity-85" />
+            </svg>
+          </div>
+          <div class="mt-2 flex items-center gap-2">
+            <button onclick="toggleVltLine()" class="text-xs font-semibold px-3 py-1 rounded-md bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 flex items-center gap-1 transition">
+              <i class="ph-bold ph-ruler"></i>
+              <span>Toggle Vertical Line Test</span>
+            </button>
+            <span class="text-[11px] text-slate-400">Legend: $\\circ$ Open (not included) | $\\blacksquare$ Closed (included)</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderCurrentQuestion() {
+      const q = currentFilteredList[currentIndex];
+      if (!q) return;
+
+      // Update counters & headers
+      document.getElementById('current-q-index').innerText = currentIndex + 1;
+      document.getElementById('total-q-count').innerText = currentFilteredList.length;
+      document.getElementById('q-origin-tag').innerText = q.origin;
+      document.getElementById('q-instruction').innerText = q.instruction;
+
+      const categoryTag = document.getElementById('q-category-tag');
+      if (q.topic === 'pairs') {
+        categoryTag.innerText = '2A Ordered Pairs';
+        categoryTag.className = 'px-2.5 py-1 rounded-lg text-xs font-extrabold bg-blue-100 text-blue-800 uppercase tracking-wider';
+      } else if (q.topic === 'graphs') {
+        categoryTag.innerText = '2A Continuous Graph';
+        categoryTag.className = 'px-2.5 py-1 rounded-lg text-xs font-extrabold bg-emerald-100 text-emerald-800 uppercase tracking-wider';
+      } else {
+        categoryTag.innerText = '2B Function Notation';
+        categoryTag.className = 'px-2.5 py-1 rounded-lg text-xs font-extrabold bg-purple-100 text-purple-800 uppercase tracking-wider';
+      }
+
+      // Solved badge
+      const solvedBadge = document.getElementById('solved-badge');
+      if (solvedSet.has(q.id)) {
+        solvedBadge.classList.remove('hidden');
+      } else {
+        solvedBadge.classList.add('hidden');
+      }
+
+      // Hide solution drawer by default when flipping questions
+      document.getElementById('solution-drawer').classList.add('hidden');
+      document.getElementById('steps-btn-text').innerText = 'Show Steps & Solution';
+      document.getElementById('feedback-message').classList.add('hidden');
+
+      // Pager disable checks
+      document.getElementById('prev-btn').disabled = currentIndex === 0;
+      document.getElementById('next-btn').disabled = currentIndex === currentFilteredList.length - 1;
+
+      // Render Display Box
+      const displayArea = document.getElementById('q-content-display');
+      displayArea.innerHTML = '';
+
+      if (q.topic === 'pairs') {
+        const pairsFormatted = q.pairs.map(p => `(${p[0]}, ${p[1]})`).join(', ');
+        displayArea.innerHTML = `
+          <div class="text-center">
+            <span class="text-xs font-bold text-indigo-500 uppercase tracking-wider">Set of Ordered Pairs:</span>
+            <div class="mt-2 font-mono text-lg md:text-2xl font-bold text-slate-900 bg-white px-5 py-3 rounded-xl border border-indigo-200 shadow-sm">
+              { ${pairsFormatted} }
+            </div>
+          </div>
+        `;
+      } 
+      else if (q.topic === 'graphs') {
+        displayArea.innerHTML = createSvgGraph(q.graphConfig);
+      } 
+      else if (q.topic === 'notation') {
+        displayArea.innerHTML = `
+          <div class="text-center py-2">
+            <span class="text-xs font-bold text-purple-600 uppercase tracking-wider">Problem Statement:</span>
+            <div class="mt-2 font-mono text-lg md:text-2xl font-black text-slate-900 bg-white px-6 py-4 rounded-xl border border-purple-200 shadow-sm">
+              ${q.expression.replace(/\\quad/g, ' &nbsp; ').replace(/\\text\{/g, '').replace(/\}/g, '')}
+            </div>
+          </div>
+        `;
+      }
+
+      // Render Interactive User Inputs
+      renderInteractionFields(q);
+
+      // Render Solution Steps inside solution drawer
+      renderSolutionSteps(q);
+
+      // Update quick jump active highlight
+      updateQuickJumpUI();
+      updateProgressBar();
+    }
+
+    function renderInteractionFields(q) {
+      const container = document.getElementById('interactive-fields');
+      container.innerHTML = '';
+
+      if (q.topic === 'pairs') {
+        container.innerHTML = `
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-600 mb-1">Domain (Enter numbers separated by commas, least to greatest):</label>
+              <div class="flex items-center">
+                <span class="font-mono text-lg font-bold text-slate-400 mr-1.5">{</span>
+                <input type="text" id="user-domain-input" placeholder="e.g. -6, -3, 0, 7, 9" class="flex-1 font-mono text-sm px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+                <span class="font-mono text-lg font-bold text-slate-400 ml-1.5">}</span>
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-600 mb-1">Range (Enter numbers separated by commas):</label>
+              <div class="flex items-center">
+                <span class="font-mono text-lg font-bold text-slate-400 mr-1.5">{</span>
+                <input type="text" id="user-range-input" placeholder="e.g. -4, 0, 7, 9" class="flex-1 font-mono text-sm px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+                <span class="font-mono text-lg font-bold text-slate-400 ml-1.5">}</span>
+              </div>
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-2">Is this a Function?</label>
+            <div class="flex items-center gap-4">
+              <label class="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-slate-50 border border-slate-200 w-32">
+                <input type="radio" name="user-is-func" value="yes" class="text-indigo-600 focus:ring-indigo-500">
+                <span class="text-sm font-bold text-slate-800">Yes</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-slate-50 border border-slate-200 w-32">
+                <input type="radio" name="user-is-func" value="no" class="text-indigo-600 focus:ring-indigo-500">
+                <span class="text-sm font-bold text-slate-800">No</span>
+              </label>
+            </div>
+          </div>
+        `;
+      } 
+      else if (q.topic === 'graphs') {
+        container.innerHTML = `
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-600 mb-1">Domain (Interval Notation, e.g., [-2, 2] or (-2, 2]):</label>
+              <input type="text" id="user-domain-input" placeholder="e.g. (-2, 2]" class="w-full font-mono text-sm px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-600 mb-1">Range (Interval Notation, e.g., [-4, 4)):</label>
+              <input type="text" id="user-range-input" placeholder="e.g. [-4, 4)" class="w-full font-mono text-sm px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none" />
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-2">Is this a Function (passes Vertical Line Test)?</label>
+            <div class="flex items-center gap-4">
+              <label class="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-slate-50 border border-slate-200 w-32">
+                <input type="radio" name="user-is-func" value="yes" class="text-emerald-600 focus:ring-emerald-500">
+                <span class="text-sm font-bold text-slate-800">Yes</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-slate-50 border border-slate-200 w-32">
+                <input type="radio" name="user-is-func" value="no" class="text-emerald-600 focus:ring-emerald-500">
+                <span class="text-sm font-bold text-slate-800">No</span>
+              </label>
+            </div>
+          </div>
+        `;
+      } 
+      else if (q.topic === 'notation') {
+        container.innerHTML = `
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">Jeff's Evaluated Answer:</label>
+            <div class="flex items-center gap-2 max-w-xs">
+              <input type="text" id="user-eval-input" placeholder="e.g. -12" class="w-full font-mono text-base font-bold px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:outline-none" />
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function renderSolutionSteps(q) {
+      const container = document.getElementById('solution-steps');
+      container.innerHTML = '';
+
+      if (q.topic === 'pairs') {
+        container.innerHTML = `
+          <div class="bg-white p-3.5 rounded-xl border border-indigo-100 shadow-sm flex flex-col gap-2">
+            <div class="font-bold text-slate-900 text-xs uppercase tracking-wider text-indigo-700 flex items-center gap-1">
+              <i class="ph-bold ph-number-circle-one"></i> Step 1: Find Domain (All x-values)
+            </div>
+            <p class="text-slate-700">${q.explanation.step1}</p>
+            <p class="text-slate-700 font-semibold">${q.explanation.step2}</p>
+            <div class="bg-indigo-50/60 p-2 rounded font-mono font-bold text-indigo-900 text-sm">
+              Domain: { ${q.domain.join(', ')} }
+            </div>
+          </div>
+
+          <div class="bg-white p-3.5 rounded-xl border border-indigo-100 shadow-sm flex flex-col gap-2">
+            <div class="font-bold text-slate-900 text-xs uppercase tracking-wider text-indigo-700 flex items-center gap-1">
+              <i class="ph-bold ph-number-circle-two"></i> Step 2: Find Range (All y-values)
+            </div>
+            <p class="text-slate-700">${q.explanation.step3}</p>
+            <div class="bg-indigo-50/60 p-2 rounded font-mono font-bold text-indigo-900 text-sm">
+              Range: { ${q.range.join(', ')} }
+            </div>
+          </div>
+
+          <div class="bg-white p-3.5 rounded-xl border border-indigo-100 shadow-sm flex flex-col gap-2">
+            <div class="font-bold text-slate-900 text-xs uppercase tracking-wider text-indigo-700 flex items-center gap-1">
+              <i class="ph-bold ph-number-circle-three"></i> Step 3: Function Test
+            </div>
+            <p class="text-slate-700">${q.explanation.step4 || 'Check if each x maps to only one y.'}</p>
+            <div class="p-2 rounded font-bold text-sm ${q.isFunction ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-rose-50 text-rose-800 border border-rose-200'}">
+              Function? : ${q.isFunction ? 'YES, this is a function.' : 'NO, this is NOT a function.'}
+            </div>
+          </div>
+        `;
+      } 
+      else if (q.topic === 'graphs') {
+        container.innerHTML = `
+          <div class="bg-white p-3.5 rounded-xl border border-emerald-100 shadow-sm flex flex-col gap-2">
+            <div class="font-bold text-xs uppercase tracking-wider text-emerald-700 flex items-center gap-1">
+              <i class="ph-bold ph-arrows-left-right"></i> Domain: Left-to-Right Bounds
+            </div>
+            <p class="text-slate-700">${q.explanation.step1}</p>
+            <div class="bg-emerald-50 p-2 rounded font-mono font-bold text-emerald-900 text-sm">
+              Domain = ${q.domainStr}
+            </div>
+          </div>
+
+          <div class="bg-white p-3.5 rounded-xl border border-emerald-100 shadow-sm flex flex-col gap-2">
+            <div class="font-bold text-xs uppercase tracking-wider text-emerald-700 flex items-center gap-1">
+              <i class="ph-bold ph-arrows-down-up"></i> Range: Bottom-to-Top Bounds
+            </div>
+            <p class="text-slate-700">${q.explanation.step2}</p>
+            <div class="bg-emerald-50 p-2 rounded font-mono font-bold text-emerald-900 text-sm">
+              Range = ${q.rangeStr}
+            </div>
+          </div>
+
+          <div class="bg-white p-3.5 rounded-xl border border-emerald-100 shadow-sm flex flex-col gap-2">
+            <div class="font-bold text-xs uppercase tracking-wider text-emerald-700 flex items-center gap-1">
+              <i class="ph-bold ph-ruler"></i> Vertical Line Test
+            </div>
+            <p class="text-slate-700">${q.explanation.step3}</p>
+            <div class="p-2 rounded font-bold text-sm ${q.isFunction ? 'bg-emerald-50 text-emerald-800' : 'bg-rose-50 text-rose-800'}">
+              Function? : ${q.isFunction ? 'YES' : 'NO'}
+            </div>
+          </div>
+        `;
+      } 
+      else if (q.topic === 'notation') {
+        container.innerHTML = `
+          <div class="bg-white p-4 rounded-xl border border-purple-100 shadow-sm flex flex-col gap-2.5">
+            <div class="font-bold text-xs uppercase tracking-wider text-purple-700 flex items-center gap-1">
+              <i class="ph-bold ph-list-numbers"></i> Detailed Step-by-Step Solution
+            </div>
+            <div class="space-y-1.5 text-slate-700">
+              <p><strong>Step 1:</strong> ${q.explanation.step1}</p>
+              <p><strong>Step 2:</strong> ${q.explanation.step2}</p>
+              ${q.explanation.step3 ? `<p><strong>Step 3:</strong> ${q.explanation.step3}</p>` : ''}
+              ${q.explanation.step4 ? `<p><strong>Step 4:</strong> ${q.explanation.step4}</p>` : ''}
+            </div>
+            <div class="mt-2 bg-purple-50 p-2.5 rounded font-mono font-extrabold text-purple-900 text-base">
+              Target Answer = ${q.targetAnswer}
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function checkUserAnswer() {
+      const q = currentFilteredList[currentIndex];
+      const feedbackEl = document.getElementById('feedback-message');
+      let isCorrect = false;
+      let msg = '';
+
+      if (q.topic === 'pairs') {
+        const dInput = (document.getElementById('user-domain-input').value || '').replace(/[\{\}\s]/g, '').split(',').filter(Boolean).map(Number).sort((a,b)=>a-b);
+        const rInput = (document.getElementById('user-range-input').value || '').replace(/[\{\}\s]/g, '').split(',').filter(Boolean).map(Number).sort((a,b)=>a-b);
+        const funcRadios = document.getElementsByName('user-is-func');
+        let selectedFunc = null;
+        for (const r of funcRadios) if (r.checked) selectedFunc = r.value === 'yes';
+
+        const dCorrect = arraysEqual(dInput, q.domain);
+        const rCorrect = arraysEqual(rInput, q.range);
+        const fCorrect = selectedFunc === q.isFunction;
+
+        if (dCorrect && rCorrect && fCorrect) {
+          isCorrect = true;
+          msg = 'Outstanding! Domain, Range, and Function test are 100% correct!';
+        } else {
+          isCorrect = false;
+          let details = [];
+          if (!dCorrect) details.push('Domain');
+          if (!rCorrect) details.push('Range');
+          if (!fCorrect) details.push('Function determination');
+          msg = `Check your: ${details.join(', ')}. Review the steps below!`;
+        }
+      } 
+      else if (q.topic === 'graphs') {
+        const clean = str => (str || '').replace(/\s+/g, '');
+        const dInput = clean(document.getElementById('user-domain-input').value);
+        const rInput = clean(document.getElementById('user-range-input').value);
+        const funcRadios = document.getElementsByName('user-is-func');
+        let selectedFunc = null;
+        for (const r of funcRadios) if (r.checked) selectedFunc = r.value === 'yes';
+
+        const dCorrect = dInput === clean(q.domainStr);
+        const rCorrect = rInput === clean(q.rangeStr);
+        const fCorrect = selectedFunc === q.isFunction;
+
+        if (dCorrect && rCorrect && fCorrect) {
+          isCorrect = true;
+          msg = 'Brilliant! Correct intervals and vertical line test!';
+        } else {
+          isCorrect = false;
+          let hints = [];
+          if (!dCorrect) hints.push('Domain bracket/parenthesis');
+          if (!rCorrect) hints.push('Range interval');
+          if (!fCorrect) hints.push('Function result');
+          msg = `Almost there! Double-check: ${hints.join(', ')}.`;
+        }
+      } 
+      else if (q.topic === 'notation') {
+        const clean = (str) => (str || '').trim().replace(/\s+/g, '');
+        const userVal = clean(document.getElementById('user-eval-input').value);
+        const expected = clean(q.targetAnswer);
+
+        if (userVal === expected) {
+          isCorrect = true;
+          msg = 'Spot on Jeff! Exactly correct numerical calculation!';
+        } else {
+          isCorrect = false;
+          msg = `Not quite (${userVal || 'empty'}). Expected ${q.targetAnswer}. Look at the steps!`;
+        }
+      }
+
+      // Display feedback
+      feedbackEl.classList.remove('hidden', 'text-emerald-600', 'text-rose-600');
+      if (isCorrect) {
+        feedbackEl.classList.add('text-emerald-600');
+        feedbackEl.innerHTML = `<i class="ph-fill ph-check-circle text-lg"></i><span>${msg}</span>`;
+        playAudioTone('success');
+        solvedSet.add(q.id);
+        localStorage.setItem('jeff_solved_q', JSON.stringify([...solvedSet]));
+        document.getElementById('solved-badge').classList.remove('hidden');
+        showToast('Great job Jeff! Problem solved!');
+        updateProgressBar();
+        updateQuickJumpUI();
+      } else {
+        feedbackEl.classList.add('text-rose-600');
+        feedbackEl.innerHTML = `<i class="ph-fill ph-warning-circle text-lg"></i><span>${msg}</span>`;
+        playAudioTone('wrong');
+      }
+
+      // Automatically open steps drawer so Jeff can inspect
+      openSolutionDrawer();
+    }
+
+    function arraysEqual(a1, a2) {
+      if (a1.length !== a2.length) return false;
+      for (let i = 0; i < a1.length; i++) {
+        if (a1[i] !== a2[i]) return false;
+      }
+      return true;
+    }
+
+    function openSolutionDrawer() {
+      const drawer = document.getElementById('solution-drawer');
+      drawer.classList.remove('hidden');
+      drawer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      document.getElementById('steps-btn-text').innerText = 'Hide Solution Steps';
+    }
+
+    function toggleSolutionDrawer() {
+      const drawer = document.getElementById('solution-drawer');
+      if (drawer.classList.contains('hidden')) {
+        drawer.classList.remove('hidden');
+        document.getElementById('steps-btn-text').innerText = 'Hide Solution Steps';
+        playAudioTone('hint');
+      } else {
+        drawer.classList.add('hidden');
+        document.getElementById('steps-btn-text').innerText = 'Show Steps & Solution';
+      }
+    }
+
+    // Toggle visual vertical test line on graph
+    function toggleVltLine() {
+      const line = document.getElementById('vlt-line');
+      if (line) {
+        line.classList.toggle('hidden');
+        playAudioTone('hint');
+      }
+    }
+
+    function updateProgressBar() {
+      const total = questionsData.length;
+      const solved = solvedSet.size;
+      const pct = Math.round((solved / total) * 100);
+      document.getElementById('progress-bar-fill').style.width = `${pct}%`;
+      document.getElementById('progress-percentage').innerText = `${pct}% Mastered (${solved}/${total})`;
+    }
+
+    function updateQuickJumpUI() {
+      const grid = document.getElementById('quick-jump-grid');
+      grid.innerHTML = '';
+
+      currentFilteredList.forEach((q, idx) => {
+        const btn = document.createElement('button');
+        const isCurrent = idx === currentIndex;
+        const isDone = solvedSet.has(q.id);
+
+        btn.className = `w-8 h-8 rounded-lg text-xs font-mono font-bold transition flex items-center justify-center border ${
+          isCurrent 
+            ? 'bg-indigo-600 text-white border-indigo-700 ring-2 ring-indigo-300' 
+            : isDone 
+              ? 'bg-emerald-100 text-emerald-800 border-emerald-300' 
+              : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
+        }`;
+        btn.innerText = idx + 1;
+        btn.title = `${q.origin} (${q.topic})`;
+        btn.onclick = () => {
+          currentIndex = idx;
+          renderCurrentQuestion();
+        };
+        grid.appendChild(btn);
+      });
+    }
+
+    function updateTopicCounts() {
+      document.getElementById('count-all').innerText = questionsData.length;
+      document.getElementById('count-pairs').innerText = questionsData.filter(q => q.topic === 'pairs').length;
+      document.getElementById('count-graphs').innerText = questionsData.filter(q => q.topic === 'graphs').length;
+      document.getElementById('count-notation').innerText = questionsData.filter(q => q.topic === 'notation').length;
+    }
+
+    function filterByTopic(topic) {
+      if (topic === 'all') {
+        currentFilteredList = [...questionsData];
+      } else {
+        currentFilteredList = questionsData.filter(q => q.topic === topic);
+      }
+      currentIndex = 0;
+      renderCurrentQuestion();
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-msg').innerText = message;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 2500);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      updateTopicCounts();
+      renderCurrentQuestion();
+
+      // Next / Previous Buttons
+      document.getElementById('next-btn').addEventListener('click', () => {
+        if (currentIndex < currentFilteredList.length - 1) {
+          currentIndex++;
+          renderCurrentQuestion();
+          playAudioTone('hint');
+        }
+      });
+
+      document.getElementById('prev-btn').addEventListener('click', () => {
+        if (currentIndex > 0) {
+          currentIndex--;
+          renderCurrentQuestion();
+          playAudioTone('hint');
+        }
+      });
+
+      // Check Answer Button
+      document.getElementById('check-ans-btn').addEventListener('click', checkUserAnswer);
+
+      // Toggle Steps Button
+      document.getElementById('toggle-steps-btn').addEventListener('click', toggleSolutionDrawer);
+
+      // Reset question
+      document.getElementById('reset-q-btn').addEventListener('click', () => {
+        const q = currentFilteredList[currentIndex];
+        solvedSet.delete(q.id);
+        localStorage.setItem('jeff_solved_q', JSON.stringify([...solvedSet]));
+        renderCurrentQuestion();
+        showToast('Question reset. Give it another try!');
+      });
+
+      // Quick jump toggle
+      document.getElementById('toggle-grid-btn').addEventListener('click', () => {
+        const container = document.getElementById('quick-jump-container');
+        container.classList.toggle('hidden');
+      });
+
+      // Topic filter buttons
+      document.querySelectorAll('.topic-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          document.querySelectorAll('.topic-btn').forEach(b => {
+            b.classList.remove('active', 'bg-indigo-600', 'text-white', 'shadow-sm');
+            b.classList.add('bg-slate-100', 'text-slate-600');
+          });
+          btn.classList.add('active', 'bg-indigo-600', 'text-white', 'shadow-sm');
+          btn.classList.remove('bg-slate-100', 'text-slate-600');
+
+          filterByTopic(btn.dataset.topic);
+        });
+      });
+
+      // Audio toggle
+      document.getElementById('sound-toggle-btn').addEventListener('click', () => {
+        soundEnabled = !soundEnabled;
+        const icon = document.getElementById('sound-icon');
+        icon.className = soundEnabled ? 'ph-bold ph-speaker-high text-base' : 'ph-bold ph-speaker-slash text-base text-rose-500';
+        showToast(soundEnabled ? 'Audio cues enabled' : 'Audio muted');
+      });
+
+      // Cheat sheet modal toggles
+      const csModal = document.getElementById('cheatsheet-modal');
+      document.getElementById('open-cheatsheet-btn').addEventListener('click', () => csModal.classList.remove('hidden'));
+      document.getElementById('close-cheatsheet-btn').addEventListener('click', () => csModal.classList.add('hidden'));
+      document.getElementById('got-it-cheatsheet-btn').addEventListener('click', () => csModal.classList.add('hidden'));
+
+      // Scratchpad modal toggles
+      const spModal = document.getElementById('scratchpad-modal');
+      document.getElementById('open-scratchpad-btn').addEventListener('click', () => spModal.classList.remove('hidden'));
+      document.getElementById('close-scratchpad-btn').addEventListener('click', () => spModal.classList.add('hidden'));
+      document.getElementById('clear-scratch-btn').addEventListener('click', () => {
+        document.getElementById('scratchpad-text').value = '';
+      });
+
+      // Keyboard arrow shortcuts for seamless review
+      window.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+        if (e.key === 'ArrowRight' && currentIndex < currentFilteredList.length - 1) {
+          currentIndex++;
+          renderCurrentQuestion();
+        } else if (e.key === 'ArrowLeft' && currentIndex > 0) {
+          currentIndex--;
+          renderCurrentQuestion();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
