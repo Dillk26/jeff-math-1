@@ -308,17 +308,14 @@
   </div>
 
   <script>
-    /* Full dataset containing:
-       - 10 Questions from Worksheet 1: 2A Ordered Pairs
-       - 4 Bonus Practice Questions for Ordered Pairs
-       - 8 Questions from Worksheet 2: 2A Graphs with coordinate parameters
-       - 3 Bonus Practice Questions for Graphs
-       - 14 Questions from Worksheet 3: 2B Function Notation & Operations
-       - 4 Bonus Practice Questions for Function Notation
-       Total = 43 comprehensive, categorized problems.
+    /* Full dataset containing 60 comprehensive, categorized problems:
+       - 20 Questions for 2A: Ordered Pairs (10 Original + 10 Extra Practice)
+       - 16 Questions for 2A: Graphs (8 Original + 8 Extra Practice)
+       - 24 Questions for 2B: Function Notation & Operations (14 Original + 10 Extra Practice)
+       Total = 60 questions.
     */
     const questionsData = [
-      // ================= 2A: ORDERED PAIRS (ORIGINAL 1-10) =================
+      // ================= 2A: ORDERED PAIRS (1-20) =================
       {
         id: 1,
         topic: 'pairs',
@@ -473,12 +470,10 @@
           step4: 'Therefore, No, this is NOT a function.'
         }
       },
-
-      // ================= 2A: BONUS ORDERED PAIRS =================
       {
         id: 11,
         topic: 'pairs',
-        origin: 'Extra Practice #A',
+        origin: 'Extra Pairs (#11)',
         instruction: 'Find the Domain and Range. Also, state whether each set of ordered pairs is a function or not.',
         pairs: [[-4, 5], [0, 5], [3, 5], [7, 5]],
         domain: [-4, 0, 3, 7],
@@ -493,7 +488,7 @@
       {
         id: 12,
         topic: 'pairs',
-        origin: 'Extra Practice #B',
+        origin: 'Extra Pairs (#12)',
         instruction: 'Find the Domain and Range. Also, state whether each set of ordered pairs is a function or not.',
         pairs: [[1, 2], [1, 3], [1, 4], [1, 5]],
         domain: [1],
@@ -506,10 +501,134 @@
           step4: 'Because the same input leads to multiple outputs, this is definitely NOT a function.'
         }
       },
-
-      // ================= 2A: DOMAIN & RANGE OF GRAPHS (ORIGINAL 1-8) =================
       {
         id: 13,
+        topic: 'pairs',
+        origin: 'Extra Pairs (#13)',
+        instruction: 'Find the Domain and Range. Also, state whether each set of ordered pairs is a function or not.',
+        pairs: [[-8, 2], [-4, 0], [0, -2], [4, -4], [8, -6]],
+        domain: [-8, -4, 0, 4, 8],
+        range: [-6, -4, -2, 0, 2],
+        isFunction: true,
+        explanation: {
+          step1: 'Domain (all $x$-values sorted): {-8, -4, 0, 4, 8}.',
+          step2: 'Range (all $y$-values sorted): {-6, -4, -2, 0, 2}.',
+          step3: 'Every $x$-value is unique. Yes, this is a function.'
+        }
+      },
+      {
+        id: 14,
+        topic: 'pairs',
+        origin: 'Extra Pairs (#14)',
+        instruction: 'Find the Domain and Range. Also, state whether each set of ordered pairs is a function or not.',
+        pairs: [[5, -1], [2, 3], [-3, 4], [5, 9], [0, -2]],
+        domain: [-3, 0, 2, 5],
+        range: [-2, -1, 3, 4, 9],
+        isFunction: false,
+        explanation: {
+          step1: 'Domain: {-3, 0, 2, 5} (5 is listed once).',
+          step2: 'Range: {-2, -1, 3, 4, 9}.',
+          step3: 'Look at $x = 5$: we have (5, -1) and (5, 9). One input gives two different outputs.',
+          step4: 'No, this is NOT a function.'
+        }
+      },
+      {
+        id: 15,
+        topic: 'pairs',
+        origin: 'Extra Pairs (#15)',
+        instruction: 'Find the Domain and Range. Also, state whether each set of ordered pairs is a function or not.',
+        pairs: [[-2, 4], [-1, 1], [0, 0], [1, 1], [2, 4]],
+        domain: [-2, -1, 0, 1, 2],
+        range: [0, 1, 4],
+        isFunction: true,
+        explanation: {
+          step1: 'Domain: {-2, -1, 0, 1, 2}.',
+          step2: 'Range: {0, 1, 4} (1 and 4 repeat as outputs, so list them once).',
+          step3: 'All $x$-values are distinct (-2, -1, 0, 1, 2). Having the same $y$-value for different $x$-values is fine (like $y = x^2$). Yes, this is a function!'
+        }
+      },
+      {
+        id: 16,
+        topic: 'pairs',
+        origin: 'Extra Pairs (#16)',
+        instruction: 'Find the Domain and Range. Also, state whether each set of ordered pairs is a function or not.',
+        pairs: [[4, -2], [1, -1], [0, 0], [1, 1], [4, 2]],
+        domain: [0, 1, 4],
+        range: [-2, -1, 0, 1, 2],
+        isFunction: false,
+        explanation: {
+          step1: 'Domain: {0, 1, 4}.',
+          step2: 'Range: {-2, -1, 0, 1, 2}.',
+          step3: 'Notice $x = 1$ gives both -1 and 1, and $x = 4$ gives both -2 and 2.',
+          step4: 'Since inputs repeat with different outputs, No, this is NOT a function.'
+        }
+      },
+      {
+        id: 17,
+        topic: 'pairs',
+        origin: 'Extra Pairs (#17)',
+        instruction: 'Find the Domain and Range. Also, state whether each set of ordered pairs is a function or not.',
+        pairs: [[-9, 3], [-7, 2], [-5, 1], [-3, 0], [-1, -1]],
+        domain: [-9, -7, -5, -3, -1],
+        range: [-1, 0, 1, 2, 3],
+        isFunction: true,
+        explanation: {
+          step1: 'Domain: {-9, -7, -5, -3, -1}.',
+          step2: 'Range: {-1, 0, 1, 2, 3}.',
+          step3: 'Every $x$-value appears only once. Yes, this is a function.'
+        }
+      },
+      {
+        id: 18,
+        topic: 'pairs',
+        origin: 'Extra Pairs (#18)',
+        instruction: 'Find the Domain and Range. Also, state whether each set of ordered pairs is a function or not.',
+        pairs: [[0, 5], [-3, 8], [2, -4], [0, -5], [6, 1]],
+        domain: [-3, 0, 2, 6],
+        range: [-5, -4, 1, 5, 8],
+        isFunction: false,
+        explanation: {
+          step1: 'Domain: {-3, 0, 2, 6}.',
+          step2: 'Range: {-5, -4, 1, 5, 8}.',
+          step3: 'Input $x = 0$ is paired with both 5 and -5: (0, 5) and (0, -5).',
+          step4: 'No, this is NOT a function.'
+        }
+      },
+      {
+        id: 19,
+        topic: 'pairs',
+        origin: 'Extra Pairs (#19)',
+        instruction: 'Find the Domain and Range. Also, state whether each set of ordered pairs is a function or not.',
+        pairs: [[-10, 0], [-5, -5], [0, 0], [5, -5], [10, 0]],
+        domain: [-10, -5, 0, 5, 10],
+        range: [-5, 0],
+        isFunction: true,
+        explanation: {
+          step1: 'Domain: {-10, -5, 0, 5, 10}.',
+          step2: 'Range: {-5, 0} (only two unique outputs!).',
+          step3: 'All $x$-inputs are unique. Yes, this is a function.'
+        }
+      },
+      {
+        id: 20,
+        topic: 'pairs',
+        origin: 'Extra Pairs (#20)',
+        instruction: 'Find the Domain and Range. Also, state whether each set of ordered pairs is a function or not.',
+        pairs: [[3, 4], [-2, 4], [7, -1], [-2, -3], [5, 0]],
+        domain: [-2, 3, 5, 7],
+        range: [-3, -1, 0, 4],
+        isFunction: false,
+        explanation: {
+          step1: 'Domain: {-2, 3, 5, 7}.',
+          step2: 'Range: {-3, -1, 0, 4}.',
+          step3: 'The input $x = -2$ repeats with two different outputs: (-2, 4) and (-2, -3).',
+          step4: 'No, this is NOT a function.'
+        }
+      },
+
+      // ================= 2A: DOMAIN & RANGE OF GRAPHS (21-36) =================
+      {
+        id: 21,
         topic: 'graphs',
         origin: 'Graphs Sheet (#1)',
         instruction: 'Find the Domain and Range in interval notation. Also determine if the graph is a function.',
@@ -528,7 +647,7 @@
         }
       },
       {
-        id: 14,
+        id: 22,
         topic: 'graphs',
         origin: 'Graphs Sheet (#2)',
         instruction: 'Find the Domain and Range in interval notation. Also determine if the graph is a function.',
@@ -547,7 +666,7 @@
         }
       },
       {
-        id: 15,
+        id: 23,
         topic: 'graphs',
         origin: 'Graphs Sheet (#3)',
         instruction: 'Find the Domain and Range in interval notation. Also determine if the graph is a function.',
@@ -566,7 +685,7 @@
         }
       },
       {
-        id: 16,
+        id: 24,
         topic: 'graphs',
         origin: 'Graphs Sheet (#4)',
         instruction: 'Find the Domain and Range in interval notation. Also determine if the graph is a function.',
@@ -586,7 +705,7 @@
         }
       },
       {
-        id: 17,
+        id: 25,
         topic: 'graphs',
         origin: 'Graphs Sheet (#5)',
         instruction: 'Find the Domain and Range in interval notation. Also determine if the graph is a function.',
@@ -606,7 +725,7 @@
         }
       },
       {
-        id: 18,
+        id: 26,
         topic: 'graphs',
         origin: 'Graphs Sheet (#6)',
         instruction: 'Find the Domain and Range in interval notation. Also determine if the graph is a function.',
@@ -627,7 +746,7 @@
         }
       },
       {
-        id: 19,
+        id: 27,
         topic: 'graphs',
         origin: 'Graphs Sheet (#7)',
         instruction: 'Find the Domain and Range in interval notation. Also determine if the graph is a function.',
@@ -647,7 +766,7 @@
         }
       },
       {
-        id: 20,
+        id: 28,
         topic: 'graphs',
         origin: 'Graphs Sheet (#8)',
         instruction: 'Find the Domain and Range in interval notation. Also determine if the graph is a function.',
@@ -666,10 +785,168 @@
           step3: 'Vertical Line Test: Vertical lines for x between -3 and 1 cut through both top and bottom branches. No, this is NOT a function.'
         }
       },
-
-      // ================= 2B: FUNCTION NOTATION (ORIGINAL 1-14) =================
       {
-        id: 21,
+        id: 29,
+        topic: 'graphs',
+        origin: 'Extra Graphs (#9)',
+        instruction: 'Find the Domain and Range in interval notation. Also determine if the graph is a function.',
+        graphConfig: {
+          type: 'line',
+          start: { x: -4, y: -2, open: false },
+          end: { x: 3, y: 5, open: true }
+        },
+        domainStr: '[-4, 3)',
+        rangeStr: '[-2, 5)',
+        isFunction: true,
+        explanation: {
+          step1: 'Domain (Left to Right): Starts at x = -4 (solid square = "[") and ends at x = 3 (open circle = ")"). Domain = [-4, 3).',
+          step2: 'Range (Bottom to Top): Lowest point is y = -2 (solid square = "[") and highest point is y = 5 (open circle = ")"). Range = [-2, 5).',
+          step3: 'Passes the Vertical Line Test everywhere. Yes, it is a function.'
+        }
+      },
+      {
+        id: 30,
+        topic: 'graphs',
+        origin: 'Extra Graphs (#10)',
+        instruction: 'Find the Domain and Range in interval notation. Also determine if the graph is a function.',
+        graphConfig: {
+          type: 'v_graph',
+          start: { x: -3, y: 4, open: false },
+          vertex: { x: 0, y: -2 },
+          end: { x: 3, y: 4, open: false }
+        },
+        domainStr: '[-3, 3]',
+        rangeStr: '[-2, 4]',
+        isFunction: true,
+        explanation: {
+          step1: 'Domain: Goes from x = -3 (closed square) to x = 3 (closed square). Domain = [-3, 3].',
+          step2: 'Range: The lowest point is the V-vertex at y = -2 (solid point) and goes up to y = 4 (closed squares). Range = [-2, 4].',
+          step3: 'Any vertical line touches the V-shape at most once. Yes, this is a function.'
+        }
+      },
+      {
+        id: 31,
+        topic: 'graphs',
+        origin: 'Extra Graphs (#11)',
+        instruction: 'Find the Domain and Range in interval notation. Also determine if the graph is a function.',
+        graphConfig: {
+          type: 'v_graph',
+          start: { x: -4, y: -3, open: true },
+          vertex: { x: -1, y: 3 },
+          end: { x: 2, y: -3, open: true }
+        },
+        domainStr: '(-4, 2)',
+        rangeStr: '(-3, 3]',
+        isFunction: true,
+        explanation: {
+          step1: 'Domain: Left endpoint is x = -4 (open circle) and right endpoint is x = 2 (open circle). Domain = (-4, 2).',
+          step2: 'Range: Lowest points are at y = -3 (open circles, so "("), and the highest peak is the solid vertex at y = 3 (so "]"). Range = (-3, 3].',
+          step3: 'Passes the Vertical Line Test. Yes, this is a function.'
+        }
+      },
+      {
+        id: 32,
+        topic: 'graphs',
+        origin: 'Extra Graphs (#12)',
+        instruction: 'Find the Domain and Range in interval notation. Also determine if the graph is a function.',
+        graphConfig: {
+          type: 'circle',
+          cx: 0,
+          cy: 0,
+          r: 3
+        },
+        domainStr: '[-3, 3]',
+        rangeStr: '[-3, 3]',
+        isFunction: false,
+        explanation: {
+          step1: 'Domain: The circle extends from x = -3 on the left to x = 3 on the right (solid curve). Domain = [-3, 3].',
+          step2: 'Range: The circle extends from y = -3 on the bottom to y = 3 on the top (solid curve). Range = [-3, 3].',
+          step3: 'Vertical Line Test: A vertical line at x = 0 hits both (0, 3) and (0, -3). It FAILS the vertical line test! No, a circle is NOT a function.'
+        }
+      },
+      {
+        id: 33,
+        topic: 'graphs',
+        origin: 'Extra Graphs (#13)',
+        instruction: 'Find the Domain and Range in interval notation. Also determine if the graph is a function.',
+        graphConfig: {
+          type: 'line',
+          start: { x: -3, y: 3, open: true },
+          end: { x: 4, y: -1, open: true }
+        },
+        domainStr: '(-3, 4)',
+        rangeStr: '(-1, 3)',
+        isFunction: true,
+        explanation: {
+          step1: 'Domain: Both endpoints at x = -3 and x = 4 are open circles. Domain = (-3, 4).',
+          step2: 'Range: Lowest point is y = -1 (open) and highest is y = 3 (open). Range = (-1, 3).',
+          step3: 'It is a straight line segment with non-vertical slope, so Yes, it is a function.'
+        }
+      },
+      {
+        id: 34,
+        topic: 'graphs',
+        origin: 'Extra Graphs (#14)',
+        instruction: 'Find the Domain and Range in interval notation. Also determine if the graph is a function.',
+        graphConfig: {
+          type: 'parabola_up',
+          start: { x: -3, y: 4, open: true },
+          vertex: { x: 0, y: -5 },
+          end: { x: 3, y: 4, open: false }
+        },
+        domainStr: '(-3, 3]',
+        rangeStr: '[-5, 4]',
+        isFunction: true,
+        explanation: {
+          step1: 'Domain: Starts at x = -3 (open circle = "(") and ends at x = 3 (closed square = "]"). Domain = (-3, 3].',
+          step2: 'Range: Lowest point is the vertex at y = -5 (solid curve = "[") and highest point reaches y = 4. Since the right endpoint at (3, 4) is closed, y = 4 IS included! Range = [-5, 4].',
+          step3: 'Passes the Vertical Line Test. Yes, this is a function.'
+        }
+      },
+      {
+        id: 35,
+        topic: 'graphs',
+        origin: 'Extra Graphs (#15)',
+        instruction: 'Find the Domain and Range in interval notation. Also determine if the graph is a function.',
+        graphConfig: {
+          type: 'v_sideways',
+          vertex: { x: -2, y: 0 },
+          top: { x: 3, y: 4, open: false },
+          bottom: { x: 3, y: -4, open: false }
+        },
+        domainStr: '[-2, 3]',
+        rangeStr: '[-4, 4]',
+        isFunction: false,
+        explanation: {
+          step1: 'Domain: Leftmost point is the vertex at x = -2 (solid) and rightmost points are at x = 3 (solid squares). Domain = [-2, 3].',
+          step2: 'Range: Lowest y is -4 (solid) and highest y is 4 (solid). Range = [-4, 4].',
+          step3: 'Vertical Line Test: Any vertical line between x = -2 and x = 3 crosses the graph twice. No, this is NOT a function.'
+        }
+      },
+      {
+        id: 36,
+        topic: 'graphs',
+        origin: 'Extra Graphs (#16)',
+        instruction: 'Find the Domain and Range in interval notation. Also determine if the graph is a function.',
+        graphConfig: {
+          type: 'piecewise',
+          p1: { x: -4, y: 1, open: false },
+          p2: { x: 0, y: 1 },
+          p3: { x: 4, y: -3, open: true }
+        },
+        domainStr: '[-4, 4)',
+        rangeStr: '(-3, 1]',
+        isFunction: true,
+        explanation: {
+          step1: 'Domain: Starts at x = -4 (solid square) and continues unbroken to x = 4 (open circle). Domain = [-4, 4).',
+          step2: 'Range: Lowest y approaches y = -3 (open circle = "(") and highest y is the flat top at y = 1 (solid = "]"). Range = (-3, 1].',
+          step3: 'Every vertical line hits only one point. Yes, this is a function.'
+        }
+      },
+
+      // ================= 2B: FUNCTION NOTATION (37-60) =================
+      {
+        id: 37,
         topic: 'notation',
         origin: 'Worksheet 3 (#1)',
         instruction: 'Evaluate the function for the given value.',
@@ -684,7 +961,7 @@
         }
       },
       {
-        id: 22,
+        id: 38,
         topic: 'notation',
         origin: 'Worksheet 3 (#2)',
         instruction: 'Evaluate the function for the given value.',
@@ -699,7 +976,7 @@
         }
       },
       {
-        id: 23,
+        id: 39,
         topic: 'notation',
         origin: 'Worksheet 3 (#3)',
         instruction: 'Evaluate the function for the given value.',
@@ -714,7 +991,7 @@
         }
       },
       {
-        id: 24,
+        id: 40,
         topic: 'notation',
         origin: 'Worksheet 3 (#4)',
         instruction: 'Evaluate the function for the given value.',
@@ -729,7 +1006,7 @@
         }
       },
       {
-        id: 25,
+        id: 41,
         topic: 'notation',
         origin: 'Worksheet 3 (#5)',
         instruction: 'Evaluate the function for the given value.',
@@ -743,7 +1020,7 @@
         }
       },
       {
-        id: 26,
+        id: 42,
         topic: 'notation',
         origin: 'Worksheet 3 (#6)',
         instruction: 'Evaluate the absolute value function.',
@@ -758,7 +1035,7 @@
         }
       },
       {
-        id: 27,
+        id: 43,
         topic: 'notation',
         origin: 'Worksheet 3 (#7)',
         instruction: 'Evaluate the absolute value function.',
@@ -773,7 +1050,7 @@
         }
       },
       {
-        id: 28,
+        id: 44,
         topic: 'notation',
         origin: 'Worksheet 3 (#8)',
         instruction: 'Evaluate the absolute value function.',
@@ -787,7 +1064,7 @@
         }
       },
       {
-        id: 29,
+        id: 45,
         topic: 'notation',
         origin: 'Worksheet 3 (#9)',
         instruction: 'Perform the indicated function operation.',
@@ -801,7 +1078,7 @@
         }
       },
       {
-        id: 30,
+        id: 46,
         topic: 'notation',
         origin: 'Worksheet 3 (#10)',
         instruction: 'Evaluate the composite function (inside function first!).',
@@ -816,7 +1093,7 @@
         }
       },
       {
-        id: 31,
+        id: 47,
         topic: 'notation',
         origin: 'Worksheet 3 (#11)',
         instruction: 'Perform the indicated function operation.',
@@ -830,7 +1107,7 @@
         }
       },
       {
-        id: 32,
+        id: 48,
         topic: 'notation',
         origin: 'Worksheet 3 (#12)',
         instruction: 'Perform the indicated function operation.',
@@ -844,7 +1121,7 @@
         }
       },
       {
-        id: 33,
+        id: 49,
         topic: 'notation',
         origin: 'Worksheet 3 (#13)',
         instruction: 'Evaluate the composite function.',
@@ -859,7 +1136,7 @@
         }
       },
       {
-        id: 34,
+        id: 50,
         topic: 'notation',
         origin: 'Worksheet 3 (#14)',
         instruction: 'Evaluate the composite function.',
@@ -873,12 +1150,10 @@
           step4: '27 - 6 = 21. Final Answer: 21.'
         }
       },
-
-      // ================= 2B: BONUS PRACTICE NOTATIONS =================
       {
-        id: 35,
+        id: 51,
         topic: 'notation',
-        origin: 'Extra Practice #C',
+        origin: 'Extra Notation (#15)',
         instruction: 'Evaluate the composite function.',
         expression: 'h(x) = 2x + 1, \\quad k(x) = x^2 - 3; \\quad \\text{Find } h(k(4))',
         type: 'composite',
@@ -890,9 +1165,9 @@
         }
       },
       {
-        id: 36,
+        id: 52,
         topic: 'notation',
-        origin: 'Extra Practice #D',
+        origin: 'Extra Notation (#16)',
         instruction: 'Evaluate absolute value notation.',
         expression: 'f(x) = -|3x - 5|; \\quad \\text{Find } f(1)',
         type: 'eval_abs',
@@ -901,6 +1176,119 @@
           step1: 'Plug in x = 1 inside the bars: 3(1) - 5 = 3 - 5 = -2.',
           step2: 'Evaluate absolute value: |-2| = 2.',
           step3: 'Apply negative sign outside: -(2) = -2. Final Answer: -2.'
+        }
+      },
+      {
+        id: 53,
+        topic: 'notation',
+        origin: 'Extra Notation (#17)',
+        instruction: 'Evaluate the function for the given value.',
+        expression: 'p(x) = -5x + 12; \\quad \\text{Find } p(4)',
+        type: 'eval_linear',
+        targetAnswer: '-8',
+        explanation: {
+          step1: 'Substitute x = 4 into p(x): p(4) = -5(4) + 12.',
+          step2: 'Multiply: -5 × 4 = -20.',
+          step3: 'Add 12: -20 + 12 = -8. Final Answer: -8.'
+        }
+      },
+      {
+        id: 54,
+        topic: 'notation',
+        origin: 'Extra Notation (#18)',
+        instruction: 'Evaluate the quadratic function for the given value.',
+        expression: 'q(n) = n^2 - 4n + 1; \\quad \\text{Find } q(-3)',
+        type: 'eval_linear',
+        targetAnswer: '22',
+        explanation: {
+          step1: 'Substitute n = -3 carefully with parentheses: q(-3) = (-3)^2 - 4(-3) + 1.',
+          step2: 'Exponent first: (-3)^2 = 9. Multiplication next: -4(-3) = +12.',
+          step3: 'Add all terms: 9 + 12 + 1 = 22. Final Answer: 22.'
+        }
+      },
+      {
+        id: 55,
+        topic: 'notation',
+        origin: 'Extra Notation (#19)',
+        instruction: 'Evaluate the absolute value function.',
+        expression: 'f(x) = 4|x - 6| - 5; \\quad \\text{Find } f(2)',
+        type: 'eval_abs',
+        targetAnswer: '11',
+        explanation: {
+          step1: 'Substitute x = 2 inside the absolute value bars: |2 - 6| = |-4| = 4.',
+          step2: 'Multiply by the 4 in front: 4 × 4 = 16.',
+          step3: 'Subtract 5: 16 - 5 = 11. Final Answer: 11.'
+        }
+      },
+      {
+        id: 56,
+        topic: 'notation',
+        origin: 'Extra Notation (#20)',
+        instruction: 'Evaluate the absolute value function.',
+        expression: 'g(a) = -3|-a + 4| + 10; \\quad \\text{Find } g(9)',
+        type: 'eval_abs',
+        targetAnswer: '-5',
+        explanation: {
+          step1: 'Substitute a = 9 inside the bars: |-9 + 4| = |-5| = 5.',
+          step2: 'Multiply by -3 in front: -3 × 5 = -15.',
+          step3: 'Add 10: -15 + 10 = -5. Final Answer: -5.'
+        }
+      },
+      {
+        id: 57,
+        topic: 'notation',
+        origin: 'Extra Notation (#21)',
+        instruction: 'Perform the indicated function operation.',
+        expression: 'f(x) = 3x + 7, \\quad g(x) = x^2 - 2; \\quad \\text{Find } f(-2) + g(-2)',
+        type: 'op_addition',
+        targetAnswer: '3',
+        explanation: {
+          step1: 'Evaluate f(-2): 3(-2) + 7 = -6 + 7 = 1.',
+          step2: 'Evaluate g(-2): (-2)^2 - 2 = 4 - 2 = 2.',
+          step3: 'Add them together: 1 + 2 = 3. Final Answer: 3.'
+        }
+      },
+      {
+        id: 58,
+        topic: 'notation',
+        origin: 'Extra Notation (#22)',
+        instruction: 'Perform the indicated function subtraction.',
+        expression: 'h(n) = 5n - 1, \\quad g(n) = 2n + 6; \\quad \\text{Find } h(3) - g(3)',
+        type: 'op_addition',
+        targetAnswer: '2',
+        explanation: {
+          step1: 'Find h(3): 5(3) - 1 = 15 - 1 = 14.',
+          step2: 'Find g(3): 2(3) + 6 = 6 + 6 = 12.',
+          step3: 'Subtract: h(3) - g(3) = 14 - 12 = 2. Final Answer: 2.'
+        }
+      },
+      {
+        id: 59,
+        topic: 'notation',
+        origin: 'Extra Notation (#23)',
+        instruction: 'Evaluate the composite function.',
+        expression: 'f(x) = -2x + 9, \\quad g(x) = 3x + 1; \\quad \\text{Find } g(f(4))',
+        type: 'composite',
+        targetAnswer: '4',
+        explanation: {
+          step1: 'Start with the inside function f(4): f(4) = -2(4) + 9 = -8 + 9 = 1.',
+          step2: 'Plug 1 into the outside function g(x): g(1) = 3(1) + 1 = 4.',
+          step3: 'Final Answer: 4.'
+        }
+      },
+      {
+        id: 60,
+        topic: 'notation',
+        origin: 'Extra Notation (#24)',
+        instruction: 'Evaluate the composite function.',
+        expression: 'f(n) = 2n^2 - 5, \\quad g(n) = -n + 2; \\quad \\text{Find } f(g(6))',
+        type: 'composite',
+        targetAnswer: '27',
+        explanation: {
+          step1: 'Start with the inside function g(6): g(6) = -(6) + 2 = -4.',
+          step2: 'Now plug -4 into f(n): f(-4) = 2(-4)^2 - 5.',
+          step3: 'Square -4 first: (-4)^2 = 16. Multiply by 2: 2 × 16 = 32.',
+          step4: 'Subtract 5: 32 - 5 = 27. Final Answer: 27.'
         }
       }
     ];
@@ -1047,6 +1435,45 @@
         endpoints = `
           <rect x="${toSvgX(-3) - 5}" y="${toSvgY(2) - 5}" width="10" height="10" fill="#4f46e5" />
           <rect x="${toSvgX(-3) - 5}" y="${toSvgY(-2) - 5}" width="10" height="10" fill="#4f46e5" />
+        `;
+      }
+      else if (config.type === 'v_graph') {
+        const d = `M ${toSvgX(config.start.x)} ${toSvgY(config.start.y)} L ${toSvgX(config.vertex.x)} ${toSvgY(config.vertex.y)} L ${toSvgX(config.end.x)} ${toSvgY(config.end.y)}`;
+        curve = `<path d="${d}" fill="none" stroke="#4f46e5" stroke-width="3.5" stroke-linejoin="round" />`;
+        endpoints += config.start.open
+          ? `<circle cx="${toSvgX(config.start.x)}" cy="${toSvgY(config.start.y)}" r="6" fill="#ffffff" stroke="#4f46e5" stroke-width="3" />`
+          : `<rect x="${toSvgX(config.start.x) - 5}" y="${toSvgY(config.start.y) - 5}" width="10" height="10" fill="#4f46e5" />`;
+        endpoints += config.end.open
+          ? `<circle cx="${toSvgX(config.end.x)}" cy="${toSvgY(config.end.y)}" r="6" fill="#ffffff" stroke="#4f46e5" stroke-width="3" />`
+          : `<rect x="${toSvgX(config.end.x) - 5}" y="${toSvgY(config.end.y) - 5}" width="10" height="10" fill="#4f46e5" />`;
+      }
+      else if (config.type === 'circle') {
+        curve = `<circle cx="${toSvgX(config.cx)}" cy="${toSvgY(config.cy)}" r="${config.r * scale}" fill="none" stroke="#4f46e5" stroke-width="3.5" />`;
+      }
+      else if (config.type === 'parabola_up') {
+        const d = `M ${toSvgX(config.start.x)} ${toSvgY(config.start.y)} Q ${toSvgX(config.vertex.x)} ${toSvgY(-14)} ${toSvgX(config.end.x)} ${toSvgY(config.end.y)}`;
+        curve = `<path d="${d}" fill="none" stroke="#4f46e5" stroke-width="3.5" />`;
+        endpoints += config.start.open
+          ? `<circle cx="${toSvgX(config.start.x)}" cy="${toSvgY(config.start.y)}" r="6" fill="#ffffff" stroke="#4f46e5" stroke-width="3" />`
+          : `<rect x="${toSvgX(config.start.x) - 5}" y="${toSvgY(config.start.y) - 5}" width="10" height="10" fill="#4f46e5" />`;
+        endpoints += config.end.open
+          ? `<circle cx="${toSvgX(config.end.x)}" cy="${toSvgY(config.end.y)}" r="6" fill="#ffffff" stroke="#4f46e5" stroke-width="3" />`
+          : `<rect x="${toSvgX(config.end.x) - 5}" y="${toSvgY(config.end.y) - 5}" width="10" height="10" fill="#4f46e5" />`;
+      }
+      else if (config.type === 'v_sideways') {
+        const d = `M ${toSvgX(config.top.x)} ${toSvgY(config.top.y)} L ${toSvgX(config.vertex.x)} ${toSvgY(config.vertex.y)} L ${toSvgX(config.bottom.x)} ${toSvgY(config.bottom.y)}`;
+        curve = `<path d="${d}" fill="none" stroke="#4f46e5" stroke-width="3.5" stroke-linejoin="round" />`;
+        endpoints = `
+          <rect x="${toSvgX(config.top.x) - 5}" y="${toSvgY(config.top.y) - 5}" width="10" height="10" fill="#4f46e5" />
+          <rect x="${toSvgX(config.bottom.x) - 5}" y="${toSvgY(config.bottom.y) - 5}" width="10" height="10" fill="#4f46e5" />
+        `;
+      }
+      else if (config.type === 'piecewise') {
+        const d = `M ${toSvgX(config.p1.x)} ${toSvgY(config.p1.y)} L ${toSvgX(config.p2.x)} ${toSvgY(config.p2.y)} L ${toSvgX(config.p3.x)} ${toSvgY(config.p3.y)}`;
+        curve = `<path d="${d}" fill="none" stroke="#4f46e5" stroke-width="3.5" stroke-linejoin="round" />`;
+        endpoints = `
+          <rect x="${toSvgX(config.p1.x) - 5}" y="${toSvgY(config.p1.y) - 5}" width="10" height="10" fill="#4f46e5" />
+          <circle cx="${toSvgX(config.p3.x)}" cy="${toSvgY(config.p3.y)}" r="6" fill="#ffffff" stroke="#4f46e5" stroke-width="3" />
         `;
       }
 
